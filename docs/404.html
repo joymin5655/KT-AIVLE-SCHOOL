@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yongmin_proj Portfolio</title>
+    <script>
+        // Redirect all 404s to dashboard
+        var path = window.location.pathname.replace(/\/$/, '');
+
+        // If the path doesn't contain dashboard, redirect to dashboard
+        if (!path.includes('dashboard')) {
+            if (path.startsWith('/yongmin_proj')) {
+                window.location.replace('/yongmin_proj/dashboard/');
+            } else {
+                window.location.replace('/yongmin_proj/dashboard/');
+            }
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>
