@@ -170,7 +170,7 @@ Modern professionals face increasing health challenges from prolonged sitting an
 ## 📁 Project Structure
 
 ```
-yongmin_proj/
+KT-AIVLE-SCHOOL/
 ├── README.md                           # Project documentation (English)
 ├── .gitignore                          # Git ignore rules
 ├── requirements.txt                    # Python dependencies
@@ -254,11 +254,11 @@ yongmin_proj/
 ### Directory Organization
 
 #### **`docs/`** - Deployed Website (Public-Facing)
-- **Landing Page**: [joymin5655.github.io/yongmin_proj](https://joymin5655.github.io/yongmin_proj/)
+- **Landing Page**: [joymin5655.github.io/KT-AIVLE-SCHOOL](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
   - Professional portfolio website with project overview
   - Interactive demo cards linking to all features
   - Modern responsive design with animations
-- **Dashboard**: [joymin5655.github.io/yongmin_proj/dashboard](https://joymin5655.github.io/yongmin_proj/dashboard/)
+- **Dashboard**: [joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/)
   - Production-ready React application
   - 8 interactive features (Posture Analysis, Statistics, Chatbot, etc.)
   - Built with Vite + React 19
@@ -298,8 +298,8 @@ Organized into three main subsystems:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/joymin5655/yongmin_proj.git
-cd yongmin_proj
+git clone https://github.com/joymin5655/KT-AIVLE-SCHOOL.git
+cd KT-AIVLE-SCHOOL
 ```
 
 ### 2. Backend Setup (Django)
@@ -515,8 +515,8 @@ PostureLog (Database) → Statistical Calculation (Python)
 
 ## 🌐 Live Demo
 
-- **Portfolio Landing Page**: [https://joymin5655.github.io/yongmin_proj/](https://joymin5655.github.io/yongmin_proj/)
-- **Source Repository**: [https://github.com/joymin5655/yongmin_proj](https://github.com/joymin5655/yongmin_proj)
+- **Portfolio Landing Page**: [https://joymin5655.github.io/KT-AIVLE-SCHOOL/](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
+- **Source Repository**: [https://github.com/joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
 - **Original Project**: [KT-AIVLE-SCHOOL by joymin5655](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
 
 ---
@@ -551,7 +551,7 @@ This project was developed for educational purposes as part of the **KT AIVLE Sc
 ## 📞 Contact
 
 For questions or collaboration:
-- **GitHub Issues**: [Create an issue](https://github.com/joymin5655/yongmin_proj/issues)
+- **GitHub Issues**: [Create an issue](https://github.com/joymin5655/KT-AIVLE-SCHOOL/issues)
 - **Original Author**: [joymin5655](https://github.com/joymin5655)
 - **Portfolio Maintainer**: [joymin5655](https://github.com/joymin5655)
 
