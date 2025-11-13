@@ -1,7 +1,7 @@
 # Posture Keeper - AI-Powered Posture Monitoring System
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square&logo=github)](https://joymin5655.github.io/yongmin_proj/)
-[![Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/joymin5655/yongmin_proj)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square&logo=github)](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
+[![Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
 [![Python](https://img.shields.io/badge/Python-3.11.3-blue?style=flat-square&logo=python)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-4.2-green?style=flat-square&logo=django)](https://www.djangoproject.com/)
 [![React](https://img.shields.io/badge/React-19.2-61dafb?style=flat-square&logo=react)](https://react.dev/)
@@ -15,24 +15,24 @@
 ## 🌐 Quick Access
 
 ### Live Demo
-- **🏠 Landing Page**: [https://joymin5655.github.io/yongmin_proj/](https://joymin5655.github.io/yongmin_proj/)
-- **🚀 Dashboard**: [https://joymin5655.github.io/yongmin_proj/dashboard/](https://joymin5655.github.io/yongmin_proj/dashboard/)
+- **🏠 Landing Page**: [https://joymin5655.github.io/KT-AIVLE-SCHOOL/](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
+- **🚀 Dashboard**: [https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/)
 
 ### Interactive Features
 | Feature | Link | Description |
 |---------|------|-------------|
-| 📊 **Dashboard** | [Launch](https://joymin5655.github.io/yongmin_proj/dashboard/) | Real-time statistics and insights |
-| 🎯 **Posture Analysis** | [Try Now](https://joymin5655.github.io/yongmin_proj/dashboard/#/posture) | AI-powered posture monitoring |
-| 🤸 **Stretching Guide** | [Start](https://joymin5655.github.io/yongmin_proj/dashboard/#/stretching) | Interactive exercise guidance |
-| 📈 **Statistics** | [View](https://joymin5655.github.io/yongmin_proj/dashboard/#/statistics) | Data visualization with charts |
-| 💬 **AI Chatbot** | [Chat](https://joymin5655.github.io/yongmin_proj/dashboard/#/chatbot) | Instant Q&A support |
-| 📝 **Community** | [Visit](https://joymin5655.github.io/yongmin_proj/dashboard/#/board) | User forum and discussions |
-| 🎮 **Gamification** | [Play](https://joymin5655.github.io/yongmin_proj/dashboard/#/gamification) | Achievements and leaderboards |
-| 👤 **Profile** | [Manage](https://joymin5655.github.io/yongmin_proj/dashboard/#/profile) | Settings and progress |
+| 📊 **Dashboard** | [Launch](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/) | Real-time statistics and insights |
+| 🎯 **Posture Analysis** | [Try Now](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/posture) | AI-powered posture monitoring |
+| 🤸 **Stretching Guide** | [Start](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/stretching) | Interactive exercise guidance |
+| 📈 **Statistics** | [View](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/statistics) | Data visualization with charts |
+| 💬 **AI Chatbot** | [Chat](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/chatbot) | Instant Q&A support |
+| 📝 **Community** | [Visit](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/board) | User forum and discussions |
+| 🎮 **Gamification** | [Play](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/gamification) | Achievements and leaderboards |
+| 👤 **Profile** | [Manage](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/profile) | Settings and progress |
 
 ### Documentation & Repository
-- **📖 Documentation**: [View README](https://github.com/joymin5655/yongmin_proj/blob/main/README.md)
-- **📂 GitHub Repository**: [joymin5655/yongmin_proj](https://github.com/joymin5655/yongmin_proj)
+- **📖 Documentation**: [View README](https://github.com/joymin5655/KT-AIVLE-SCHOOL/blob/main/README.md)
+- **📂 GitHub Repository**: [joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
 - **🔗 Original Source**: [joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
 
 ---
