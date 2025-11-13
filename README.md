@@ -1,7 +1,7 @@
 # Posture Keeper - AI-Powered Posture Monitoring System
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square&logo=github)](https://inkeuncho.github.io/yongmin_proj/)
-[![Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/inkeuncho/yongmin_proj)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square&logo=github)](https://joymin5655.github.io/yongmin_proj/)
+[![Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/joymin5655/yongmin_proj)
 [![Python](https://img.shields.io/badge/Python-3.11.3-blue?style=flat-square&logo=python)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-4.2-green?style=flat-square&logo=django)](https://www.djangoproject.com/)
 [![React](https://img.shields.io/badge/React-19.2-61dafb?style=flat-square&logo=react)](https://react.dev/)
@@ -15,24 +15,24 @@
 ## 🌐 Quick Access
 
 ### Live Demo
-- **🏠 Landing Page**: [https://inkeuncho.github.io/yongmin_proj/](https://inkeuncho.github.io/yongmin_proj/)
-- **🚀 Dashboard**: [https://inkeuncho.github.io/yongmin_proj/dashboard/](https://inkeuncho.github.io/yongmin_proj/dashboard/)
+- **🏠 Landing Page**: [https://joymin5655.github.io/yongmin_proj/](https://joymin5655.github.io/yongmin_proj/)
+- **🚀 Dashboard**: [https://joymin5655.github.io/yongmin_proj/dashboard/](https://joymin5655.github.io/yongmin_proj/dashboard/)
 
 ### Interactive Features
 | Feature | Link | Description |
 |---------|------|-------------|
-| 📊 **Dashboard** | [Launch](https://inkeuncho.github.io/yongmin_proj/dashboard/) | Real-time statistics and insights |
-| 🎯 **Posture Analysis** | [Try Now](https://inkeuncho.github.io/yongmin_proj/dashboard/#/posture) | AI-powered posture monitoring |
-| 🤸 **Stretching Guide** | [Start](https://inkeuncho.github.io/yongmin_proj/dashboard/#/stretching) | Interactive exercise guidance |
-| 📈 **Statistics** | [View](https://inkeuncho.github.io/yongmin_proj/dashboard/#/statistics) | Data visualization with charts |
-| 💬 **AI Chatbot** | [Chat](https://inkeuncho.github.io/yongmin_proj/dashboard/#/chatbot) | Instant Q&A support |
-| 📝 **Community** | [Visit](https://inkeuncho.github.io/yongmin_proj/dashboard/#/board) | User forum and discussions |
-| 🎮 **Gamification** | [Play](https://inkeuncho.github.io/yongmin_proj/dashboard/#/gamification) | Achievements and leaderboards |
-| 👤 **Profile** | [Manage](https://inkeuncho.github.io/yongmin_proj/dashboard/#/profile) | Settings and progress |
+| 📊 **Dashboard** | [Launch](https://joymin5655.github.io/yongmin_proj/dashboard/) | Real-time statistics and insights |
+| 🎯 **Posture Analysis** | [Try Now](https://joymin5655.github.io/yongmin_proj/dashboard/#/posture) | AI-powered posture monitoring |
+| 🤸 **Stretching Guide** | [Start](https://joymin5655.github.io/yongmin_proj/dashboard/#/stretching) | Interactive exercise guidance |
+| 📈 **Statistics** | [View](https://joymin5655.github.io/yongmin_proj/dashboard/#/statistics) | Data visualization with charts |
+| 💬 **AI Chatbot** | [Chat](https://joymin5655.github.io/yongmin_proj/dashboard/#/chatbot) | Instant Q&A support |
+| 📝 **Community** | [Visit](https://joymin5655.github.io/yongmin_proj/dashboard/#/board) | User forum and discussions |
+| 🎮 **Gamification** | [Play](https://joymin5655.github.io/yongmin_proj/dashboard/#/gamification) | Achievements and leaderboards |
+| 👤 **Profile** | [Manage](https://joymin5655.github.io/yongmin_proj/dashboard/#/profile) | Settings and progress |
 
 ### Documentation & Repository
-- **📖 Documentation**: [View README](https://github.com/inkeuncho/yongmin_proj/blob/main/README.md)
-- **📂 GitHub Repository**: [inkeuncho/yongmin_proj](https://github.com/inkeuncho/yongmin_proj)
+- **📖 Documentation**: [View README](https://github.com/joymin5655/yongmin_proj/blob/main/README.md)
+- **📂 GitHub Repository**: [joymin5655/yongmin_proj](https://github.com/joymin5655/yongmin_proj)
 - **🔗 Original Source**: [joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
 
 ---
@@ -254,11 +254,11 @@ yongmin_proj/
 ### Directory Organization
 
 #### **`docs/`** - Deployed Website (Public-Facing)
-- **Landing Page**: [inkeuncho.github.io/yongmin_proj](https://inkeuncho.github.io/yongmin_proj/)
+- **Landing Page**: [joymin5655.github.io/yongmin_proj](https://joymin5655.github.io/yongmin_proj/)
   - Professional portfolio website with project overview
   - Interactive demo cards linking to all features
   - Modern responsive design with animations
-- **Dashboard**: [inkeuncho.github.io/yongmin_proj/dashboard](https://inkeuncho.github.io/yongmin_proj/dashboard/)
+- **Dashboard**: [joymin5655.github.io/yongmin_proj/dashboard](https://joymin5655.github.io/yongmin_proj/dashboard/)
   - Production-ready React application
   - 8 interactive features (Posture Analysis, Statistics, Chatbot, etc.)
   - Built with Vite + React 19
@@ -298,7 +298,7 @@ Organized into three main subsystems:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/inkeuncho/yongmin_proj.git
+git clone https://github.com/joymin5655/yongmin_proj.git
 cd yongmin_proj
 ```
 
@@ -515,8 +515,8 @@ PostureLog (Database) → Statistical Calculation (Python)
 
 ## 🌐 Live Demo
 
-- **Portfolio Landing Page**: [https://inkeuncho.github.io/yongmin_proj/](https://inkeuncho.github.io/yongmin_proj/)
-- **Source Repository**: [https://github.com/inkeuncho/yongmin_proj](https://github.com/inkeuncho/yongmin_proj)
+- **Portfolio Landing Page**: [https://joymin5655.github.io/yongmin_proj/](https://joymin5655.github.io/yongmin_proj/)
+- **Source Repository**: [https://github.com/joymin5655/yongmin_proj](https://github.com/joymin5655/yongmin_proj)
 - **Original Project**: [KT-AIVLE-SCHOOL by joymin5655](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
 
 ---
@@ -551,9 +551,9 @@ This project was developed for educational purposes as part of the **KT AIVLE Sc
 ## 📞 Contact
 
 For questions or collaboration:
-- **GitHub Issues**: [Create an issue](https://github.com/inkeuncho/yongmin_proj/issues)
+- **GitHub Issues**: [Create an issue](https://github.com/joymin5655/yongmin_proj/issues)
 - **Original Author**: [joymin5655](https://github.com/joymin5655)
-- **Portfolio Maintainer**: [inkeuncho](https://github.com/inkeuncho)
+- **Portfolio Maintainer**: [joymin5655](https://github.com/joymin5655)
 
 ---
 
