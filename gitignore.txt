@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media/
+/staticfiles/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ML/AI Models
+*.pkl
+*.h5
+*.joblib
+/model_pose_final/
+/model_stretch_final/
+mlruns/
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+*.cache
+.cache/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Large artifacts
+artifacts/
+
+# React/Node
+dashboard/node_modules/
+dashboard/dist/
+dashboard/.vite/
+node_modules/
+
+# Built dashboards (commented out to include in GitHub Pages)
+# docs/dashboard/
