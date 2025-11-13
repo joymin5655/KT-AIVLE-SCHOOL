@@ -39,7 +39,7 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router basename="/yongmin_proj/dashboard/">
+      <Router basename="/KT-AIVLE-SCHOOL/dashboard/">
         <div className="app">
           <Navbar toggleSidebar={toggleSidebar} />
           <div className="app-container">
