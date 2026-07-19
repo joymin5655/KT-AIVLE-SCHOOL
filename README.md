@@ -1,596 +1,153 @@
-# Posture Keeper - AI-Powered Posture Monitoring System
+# 바른자세 지킴이 · Posture Keeper
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-green?style=flat-square&logo=github)](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
-[![Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
-[![Python](https://img.shields.io/badge/Python-3.11.3-blue?style=flat-square&logo=python)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-4.2-green?style=flat-square&logo=django)](https://www.djangoproject.com/)
-[![React](https://img.shields.io/badge/React-19.2-61dafb?style=flat-square&logo=react)](https://react.dev/)
+[![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-4.2.7-092e20?style=flat-square&logo=django)](https://www.djangoproject.com/)
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-Holistic-ff6f00?style=flat-square)](https://developers.google.com/mediapipe)
+[![XGBoost](https://img.shields.io/badge/XGBoost-classifier-b8003e?style=flat-square)](https://xgboost.readthedocs.io/)
 
-> **AI-Based Health Management Web Service for Real-Time Posture Analysis**
-> KT AIVLE School 3rd Cohort - Team 10 Mini Project 6
-> Development Period: September 2024 - October 2024 (6 weeks)
-
----
-
-## 🌐 Quick Access
-
-### Live Demo
-- **🏠 Landing Page**: [https://joymin5655.github.io/KT-AIVLE-SCHOOL/](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
-- **🚀 Dashboard**: [https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/)
-
-### Interactive Features
-| Feature | Link | Description |
-|---------|------|-------------|
-| 📊 **Dashboard** | [Launch](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/) | Real-time statistics and insights |
-| 🎯 **Posture Analysis** | [Try Now](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/posture) | AI-powered posture monitoring |
-| 🤸 **Stretching Guide** | [Start](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/stretching) | Interactive exercise guidance |
-| 📈 **Statistics** | [View](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/statistics) | Data visualization with charts |
-| 💬 **AI Chatbot** | [Chat](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/chatbot) | Instant Q&A support |
-| 📝 **Community** | [Visit](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/board) | User forum and discussions |
-| 🎮 **Gamification** | [Play](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/gamification) | Achievements and leaderboards |
-| 👤 **Profile** | [Manage](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/#/profile) | Settings and progress |
-
-### Documentation & Repository
-- **📖 Documentation**: [View README](https://github.com/joymin5655/KT-AIVLE-SCHOOL/blob/main/README.md)
-- **📂 GitHub Repository**: [joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
-- **🔗 Original Source**: [joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
+> 웹캠만으로 실시간 자세를 감지하는 AI 헬스케어 웹 서비스.
+> KT AIVLE School **4기** (수도권 AI 4반) · **Team 10** · 미니프로젝트 (2024.09 – 2024.10)
 
 ---
 
-## 📋 Table of Contents
+## 링크
 
-1. [Quick Access](#-quick-access)
-2. [Overview](#-overview)
-3. [Key Features](#-key-features)
-4. [Technology Stack](#-technology-stack)
-5. [Project Structure](#-project-structure)
-6. [Installation](#-installation)
-7. [Usage](#-usage)
-8. [Team](#-team)
-9. [Architecture](#-architecture)
-10. [Performance](#-performance)
-11. [License](#-license)
+- **설계도 / 랜딩** — https://joymin5655.github.io/KT-AIVLE-SCHOOL/ (목적 + 전체 시스템 아키텍처 청사진, 한/영)
+- **제품 데모** — https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/ (실제 구축한 Django 화면 20페이지의 **정적 데모**)
+  - 예: [통계](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/statistics.html) · [모니터링](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/service.html) · [게시판](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/board.html) · [챗봇](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/chatbot.html)
+- **원본 저장소** — [sbchae11/team10](https://github.com/sbchae11/team10) (팀 원본) → 본 저장소는 팀원 조용민의 개인 아카이브
 
 ---
 
-## 🎯 Overview
+## 이 프로젝트의 실제 구조 (정직한 설명)
 
-**Posture Keeper** is an AI-powered web application that monitors your posture in real-time using only a webcam—no additional hardware required. The system detects poor posture, sends alerts, and provides personalized stretching guidance to help office workers and remote employees maintain healthy habits.
+프론트엔드가 **두 갈래**로 나뉩니다. 겉모습은 비슷하지만 성격이 완전히 다릅니다.
 
-### Why Posture Keeper?
+| | 실제 동작 앱 | 포트폴리오 데모 |
+|---|---|---|
+| 형태 | **Django 서버렌더 템플릿 + jQuery** | React SPA (Vite) |
+| 위치 | `src/backend/` (로컬 `runserver`) | `src/frontend/` (소스) · `docs/_react-demo-backup/` (빌드, 보관) |
+| 데이터 | 실제 ML 추론 + SQLite | `mockData.js` 목업 (백엔드 호출 0) |
+| 백엔드 연결 | ✅ | ❌ |
 
-Modern professionals face increasing health challenges from prolonged sitting and computer use:
-- 🔴 **Turtle Neck Syndrome** (Forward Head Posture)
-- 🔴 **Scoliosis** (Spinal Curvature)
-- 🔴 **Frozen Shoulder** (Adhesive Capsulitis)
-- 🔴 **Chronic Lower Back Pain**
-
-### Our Solution
-
-✅ **Webcam-only solution** - No external devices needed
-✅ **Real-time monitoring** - Instant feedback on posture
-✅ **Smart alerts** - Notification after 1 minute of poor posture
-✅ **Environmental adaptability** - Works in various lighting and backgrounds
-✅ **Flexible setup** - No forced camera angles or positions
-✅ **Stretching guidance** - Interactive exercise verification
+**GitHub Pages `docs/dashboard/`** 는 위 실제 Django 화면(home·서비스·통계·게시판·챗봇·회원 등 20페이지)을 **정적으로 변환한 제품 데모**입니다. 실시간 웹캠 자세판별·챗봇 응답은 백엔드(MediaPipe·XGBoost·LangChain)가 있어야 동작하므로, 정적 데모에서는 각 페이지 상단 배너로 안내합니다. (초기 React 목업은 `docs/_react-demo-backup/`에 보관.)
 
 ---
 
-## 🚀 Key Features
+## 핵심 기능
 
-### 1. Real-Time Posture Monitoring ⭐
-- **MediaPipe-powered** pose estimation (33 landmarks)
-- **Continuous analysis** of shoulder, neck, and back angles
-- **Web notifications** triggered after 1 minute of poor posture
-- **85-90% accuracy** across different environments
-- **30 FPS** real-time processing
-
-### 2. Advanced AI Model ⭐
-- **Environment-independent** performance (lighting, background, distance)
-- **Flexible camera positioning** (no mandatory side view)
-- **Robust detection** with multiple angles and distances
-- Differentiates from competitors requiring fixed camera setups
-
-### 3. Interactive Stretching Guide
-- **Scheduled stretching reminders** based on user preferences
-- **10-second pose verification** using real-time AI analysis
-- **Visual guidance** with on-screen demonstrations
-- **Retry mechanism** for incomplete exercises
-
-### 4. Statistics & Analytics Dashboard
-- **Daily/Weekly/Monthly** posture data aggregation
-- **Good posture ratio** calculation and tracking
-- **Usage time statistics** with detailed breakdowns
-- **Improvement trend analysis** using linear regression
-- **Time-based posture patterns** visualization
-
-### 5. Data Visualization with Chart.js
-- **Line charts** - Weekly posture trends
-- **Bar charts** - Hourly usage patterns
-- **Pie charts** - Good vs. bad posture ratio
-- **Donut charts** - Time distribution analysis
-- **Real-time updates** every 5 seconds
-
-### 6. Community Board (CRUD)
-- **Full CRUD operations** (Create, Read, Update, Delete)
-- **Comment system** with nested replies
-- **Advanced search** with filters (category, date, author)
-- **Pagination** (10 posts per page)
-- **Responsive design** optimized for mobile
-
-### 7. AI Chatbot (Optional Feature)
-- **Langchain-powered** conversational AI
-- **Posture-related Q&A** assistance
-- Context-aware responses
+- **실시간 자세 모니터링** — 웹캠 프레임을 3초마다 캡처 → MediaPipe Holistic 랜드마크 → 특징 엔지니어링 → **XGBoost 분류**(정상/거북목/턱괴기/엎드림/기댐) → 1분 이상 나쁜 자세 시 웹 알림
+- **스트레칭 게임** — 포즈 가이드 + 실시간 자세 판정
+- **통계·시각화** — 정확/부정확 자세 비율, 주간 추이 등 Chart.js 시각화
+- **커뮤니티 게시판** — 글/댓글 CRUD + 검색 + 페이징
+- **RAG 챗봇** — FAQ CSV → 임베딩 → ChromaDB 오프라인 적재, 런타임 LangChain 에이전트(gpt-3.5-turbo)
+- **계정** — django-allauth 기반 로그인/회원가입(Google·Naver 소셜)
 
 ---
 
-## 💻 Technology Stack
+## 기술 스택 (requirements.txt · package.json 기준)
 
-### Backend
-| Technology | Purpose |
-|------------|---------|
-| **Python 3.11.3** | Core programming language |
-| **Django 4.2** | Web framework |
-| **Django REST Framework** | RESTful API development |
-| **SQLite** | Development database |
-| **ChromaDB** | Vector database for AI chatbot |
+**백엔드 / ML** — Python 3.11 · Django 4.2.7 · MediaPipe · OpenCV · scikit-learn · **XGBoost**(자세 분류기) · LangChain · OpenAI · ChromaDB · FAISS · SQLite · django-allauth
+**포트폴리오 프론트** — React 19 · Vite · React Router · Chart.js · Recharts (목업 데모, 현재 보관)
+**정적 데모 변환** — Django 템플릿 → 오프라인 렌더로 정적 HTML 생성 (전처리로 `{% url/static %}` 치환 + 데모 데이터)
 
-### Frontend
-| Technology | Purpose |
-|------------|---------|
-| **React 19.2** | Modern UI framework |
-| **Vite 7.2** | Build tool and dev server |
-| **React Router 7.9** | Client-side routing |
-| **Chart.js 4.5** | Data visualization |
-| **Recharts 3.4** | Advanced charting |
-| **Bootstrap 5** | Responsive design |
-| **HTML5/CSS3** | Markup and styling |
-| **JavaScript (ES6+)** | Client-side scripting |
-
-### AI/ML
-| Technology | Purpose |
-|------------|---------|
-| **MediaPipe** | Real-time pose estimation |
-| **OpenCV** | Video stream processing |
-| **NumPy** | Numerical computations |
-| **Langchain** | AI chatbot framework |
-| **TensorFlow** | Machine learning backend |
-
-### DevOps & Tools
-| Technology | Purpose |
-|------------|---------|
-| **Git/GitHub** | Version control and collaboration |
-| **GitHub Pages** | Portfolio hosting |
-| **VS Code** | Development environment |
-| **Jupyter Notebook** | Data analysis and experimentation |
+> 참고: `requirements.txt`에 `tensorflow-cpu`·`mlflow`가 있으나, 배포된 자세 판별기는 **XGBoost `.pkl`** 이며 mlflow는 비활성 레거시 import입니다.
 
 ---
 
-## 📁 Project Structure
+## 실시간 자세 판별 파이프라인
+
+```
+Webcam ─capture.js(canvas 3s)─▶ POST /service/send_image/
+   ─▶ MediaPipe Holistic ─▶ service/preprocessing.py(거리·각도 특징)
+   ─▶ XGBoost .pkl ─▶ PostureDetection(SQLite)
+   ─▶ JSON{class_name} ─▶ notification.js(1분 나쁜자세 알림)
+```
+
+- 자세 랜드마크 셋 `[0,2,5,7,8,11,12,15,16]` · 스트레칭 `[0,2,5,6,7,8,11,12,13,14,15,16,21,22]`
+- 클래스: `0` 정상 · `1~4` 나쁜 자세 유형 · `-1` 사람 없음
+
+---
+
+## 프로젝트 구조
 
 ```
 KT-AIVLE-SCHOOL/
-├── README.md                           # Project documentation (English)
-├── .gitignore                          # Git ignore rules
-├── requirements.txt                    # Python dependencies
-│
-├── docs/                               # GitHub Pages (deployed website)
-│   ├── index.html                     # Main landing page (English)
-│   ├── 404.html                       # Custom 404 error page
-│   ├── pages/                         # Additional pages
-│   └── dashboard/                     # React dashboard (production build)
-│       ├── index.html                 # Dashboard entry point
-│       ├── assets/                    # JS/CSS bundles
-│       └── images/                    # Stretching exercise images
-│
-└── src/                                # Source code (development)
-    ├── ai/                            # AI/ML models and data
-    │   ├── Posture_Classification/    # Posture detection model
-    │   │   ├── 1Data_Processing/      # Data preprocessing scripts
-    │   │   ├── 2Modeling/             # Model training notebooks
-    │   │   └── 3Realtime_Classification/ # Real-time inference engine
-    │   └── Stretching_Classification/ # Stretching verification model
-    │       ├── 0Data_Processing/      # Data preprocessing
-    │       ├── 1Modeling/             # Model development
-    │       └── 2Realtime_Classification/ # Real-time verification
-    │
-    ├── backend/                       # Django web application
-    │   ├── accounts/                  # User authentication & management
-    │   │   ├── models.py              # User profile models
-    │   │   ├── views.py               # Login/signup views
-    │   │   ├── urls.py                # Authentication routes
-    │   │   └── templates/             # Auth templates
-    │   ├── service/                   # Core posture monitoring service
-    │   │   ├── models.py              # PostureLog, StretchingLog models
-    │   │   ├── views.py               # Monitoring API views
-    │   │   ├── consumers.py           # WebSocket consumers
-    │   │   └── templates/             # Service UI templates
-    │   ├── chatbot/                   # AI chatbot module
-    │   │   ├── models.py              # Chat history models
-    │   │   ├── views.py               # Chatbot API
-    │   │   └── langchain_utils.py     # Langchain integration
-    │   ├── brd/                       # Community board (forum)
-    │   │   ├── models.py              # Post, Comment models
-    │   │   ├── views.py               # CRUD operations
-    │   │   ├── forms.py               # Board forms
-    │   │   └── templates/             # Board templates
-    │   ├── home/                      # Homepage and info pages
-    │   │   ├── views.py               # Homepage views
-    │   │   └── templates/             # Homepage templates
-    │   ├── static/                    # Static assets
-    │   │   ├── css/                   # Stylesheets
-    │   │   ├── js/                    # JavaScript files
-    │   │   └── assets/                # Images, icons, fonts
-    │   ├── media/                     # User-uploaded files
-    │   │   └── brd_image/             # Board post images
-    │   ├── templates/                 # Global Django templates
-    │   │   ├── base.html              # Base template
-    │   │   └── navbar.html            # Navigation bar
-    │   ├── team10/                    # Django project configuration
-    │   │   ├── settings.py            # Project settings
-    │   │   ├── urls.py                # Root URL configuration
-    │   │   ├── wsgi.py                # WSGI entry point
-    │   │   └── asgi.py                # ASGI entry point
-    │   ├── manage.py                  # Django management script
-    │   └── .gitignore                 # Backend-specific ignores
-    │
-    └── frontend/                      # React dashboard (source code)
-        ├── src/                       # React source code
-        │   ├── components/            # Reusable UI components
-        │   ├── context/               # React Context API
-        │   ├── data/                  # Mock/static data
-        │   ├── styles/                # CSS modules
-        │   └── assets/                # Images and icons
-        ├── public/                    # Public assets
-        │   └── images/                # Static images
-        ├── index.html                 # HTML entry point
-        ├── vite.config.js             # Vite build configuration
-        ├── package.json               # Node.js dependencies
-        ├── package-lock.json          # Dependency lock file
-        └── .gitignore                 # Frontend-specific ignores
+├── README.md
+├── requirements.txt                # 백엔드/ML 파이썬 의존성
+├── docs/                           # GitHub Pages (master 브랜치 /docs 서빙)
+│   ├── index.html                  # 설계도/랜딩 (cyanotype 청사진, 한/영)
+│   ├── 404.html
+│   ├── dashboard/                  # 제품 데모 = 실제 Django 화면의 정적 변환본(20페이지 + static)
+│   └── _react-demo-backup/         # 초기 React SPA 목업 (보관)
+└── src/
+    ├── ai/                         # 자세/스트레칭 분류 (전처리·모델링 노트북·실시간 추론)
+    ├── backend/                    # 실제 동작 Django 앱
+    │   ├── team10/                 # 프로젝트 설정 (settings·urls)
+    │   ├── home/  accounts/  service/  chatbot/  brd/
+    │   ├── templates/layout.html   # 전역 레이아웃
+    │   └── static/                 # css·js·images·webfonts
+    └── frontend/                   # React 데모 소스 (Vite)
 ```
-
-### Directory Organization
-
-#### **`docs/`** - Deployed Website (Public-Facing)
-- **Landing Page**: [joymin5655.github.io/KT-AIVLE-SCHOOL](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
-  - Professional portfolio website with project overview
-  - Interactive demo cards linking to all features
-  - Modern responsive design with animations
-- **Dashboard**: [joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/)
-  - Production-ready React application
-  - 8 interactive features (Posture Analysis, Statistics, Chatbot, etc.)
-  - Built with Vite + React 19
-- Automatically deployed when pushed to the main branch
-
-#### **`src/`** - Source Code (Development)
-Organized into three main subsystems:
-
-1. **`ai/`** - Machine Learning Components
-   - Pose estimation models for real-time posture detection
-   - Stretching exercise verification algorithms
-   - Training data, notebooks, and inference scripts
-
-2. **`backend/`** - Django Web Application
-   - User authentication and profile management
-   - Posture monitoring service with WebSocket support
-   - Community board with CRUD operations
-   - AI chatbot powered by Langchain
-   - RESTful APIs for frontend integration
-
-3. **`frontend/`** - React Dashboard
-   - Modern UI components with React 19
-   - Data visualization with Chart.js and Recharts
-   - Real-time updates and interactive charts
-   - Responsive design for mobile compatibility
 
 ---
 
-## 🔧 Installation
+## 로컬 실행
 
-### Prerequisites
-- **Python 3.11.3** or higher
-- **Node.js 18+** and npm (for dashboard)
-- **pip** (Python package manager)
-- **Git** for version control
-
-### 1. Clone the Repository
+### 실제 앱 (Django) — 권장
 
 ```bash
 git clone https://github.com/joymin5655/KT-AIVLE-SCHOOL.git
 cd KT-AIVLE-SCHOOL
-```
 
-### 2. Backend Setup (Django)
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Linux/Mac:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
-
-# Install Python dependencies
+python -m venv venv && source venv/bin/activate    # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Navigate to backend directory
 cd src/backend
-
-# Run database migrations
 python manage.py migrate
-
-# Create superuser (optional)
-python manage.py createsuperuser
-
-# Collect static files
-python manage.py collectstatic --noinput
-
-# Start development server
-python manage.py runserver
+python manage.py runserver        # http://localhost:8000
 ```
 
-The Django application will be available at `http://localhost:8000`
+- 자세 판별 모델 `.pkl` 2개(`pose_classification_model.pkl`, `pose_classification_model_stretch_final.pkl`)가 `src/backend/service/`에 있어야 합니다. (원 저장소에서는 git에 포함되지 않아 별도 배치 필요.)
+- 챗봇·소셜 로그인은 `.env`의 OpenAI / OAuth 키가 필요합니다.
 
-### 3. Frontend Setup (React Dashboard)
+### React 데모 (선택, 목업)
 
 ```bash
-# Navigate to frontend directory
 cd src/frontend
-
-# Install Node dependencies
 npm install
-
-# Start development server
-npm run dev
+npm run dev        # http://localhost:5173
 ```
 
-The React dashboard will be available at `http://localhost:5173`
+### 정적 제품 데모 배포
 
-### 4. Production Build (Optional)
-
-```bash
-# Build React dashboard for production
-cd src/frontend
-npm run build
-
-# The built files will be in the dist/ directory
-# You can serve them with a static file server or deploy to a hosting service
-```
+`docs/`는 master 브랜치 `/docs` 경로로 GitHub Pages에 자동 배포됩니다. `docs/dashboard/`는 위 Django 화면을 정적 변환해 넣은 결과물입니다.
 
 ---
 
-## 📱 Usage
+## 팀 · 역할
 
-### Starting the Application
+**Team 10 — KT AIVLE School 4기 (수도권 AI 4반)**: 김현주 · 이돈규 · 이성규 · 조용민 · 채수빈 · 현동욱
 
-1. **Start Django Backend**
-   ```bash
-   cd src/backend
-   python manage.py runserver
-   ```
+역할 분담(최종 발표자료 slide4 · 과제정의서 기준, 요약):
 
-2. **Start React Frontend** (Development)
-   ```bash
-   cd src/frontend
-   npm run dev
-   ```
+| 이름 | 담당 (발표자료) |
+|---|---|
+| 김현주 | 로그인·회원가입·소셜로그인 · **RAG 챗봇** |
+| 이돈규 | AI 설계 · 데이터 · 알고리즘 |
+| 이성규 | AI 설계/고도화 · 거리·자세 판별 데이터 수집/전처리 · Mlflow · AI 실행 알고리즘 |
+| **조용민** | 바른 자세 판별 AI 모델 · 메인/게시판 페이지 · 페이지·게시글 검색 · 통계 · 데이터 시각화 · DB 데이터 관리 |
+| 채수빈 | 웹캠 출력/전송 · 서비스 페이지 · 스트레칭 기본 AI 모델 · 시각화 |
+| 현동욱 | 백엔드 · DB · 모델 성능 고도화 · 문서 |
 
-3. **Access the Application**
-   - Backend: http://localhost:8000
-   - Frontend: http://localhost:5173
-   - Admin Panel: http://localhost:8000/admin
-
-### Using Posture Monitoring
-
-1. **Sign up** or **Log in** to your account
-2. Navigate to **"Start Monitoring"** page
-3. **Allow webcam access** when prompted
-4. Position yourself in front of the camera
-5. The system will:
-   - Analyze your posture in real-time
-   - Display posture status (Good/Bad)
-   - Send alerts after 1 minute of poor posture
-   - Log data for statistics
-
-### Viewing Statistics
-
-1. Go to **"Dashboard"** or **"Statistics"** page
-2. View your posture data:
-   - Daily/Weekly/Monthly trends
-   - Good vs. bad posture ratio
-   - Time-based usage patterns
-3. Track your improvement over time
-
-### Community Board
-
-1. Browse posts in the **"Community"** section
-2. Create new posts to share tips
-3. Comment on others' posts
-4. Search posts by keyword, category, or author
+> **정직성 노트.** 위는 팀 최종 발표자료 기재 기준입니다. 조용민의 과제정의서 공식 역할은 FE·BE·UI/UX·DB·데이터·문서이며(AI는 팀 분담), 자세 판별 모델·DB는 git 커밋 저자가 팀원과 합쳐져 있어 **공동 작업**으로 보는 것이 정확합니다. 자세한 근거·아키텍처는 [설계도 페이지](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)를 참고하세요.
 
 ---
 
-## 👥 Team
+## 출처 · 라이선스
 
-**Team 10 - KT AIVLE School 3rd Cohort**
+- 원본 팀 저장소 [`sbchae11/team10`](https://github.com/sbchae11/team10) 을 팀원이었던 조용민이 개인 아카이브(`joymin5655/KT-AIVLE-SCHOOL`)로 가져온 것입니다.
+- KT AIVLE School 교육용 미니프로젝트이며 학습·포트폴리오 목적입니다. 상업적 사용·무단 재배포·저작자 사칭은 금지합니다.
 
-| Name | Role | Responsibilities |
-|------|------|------------------|
-| **Kim Hyun-Joo** | Frontend, Backend, UI/UX, Data, Documentation, Presentation | UI design, backend development, data analysis, documentation |
-| **Lee Don-Gyu** | Frontend, Backend, Presentation | Frontend implementation, backend APIs, project presentation |
-| **Lee Sung-Gyu** | Frontend, UI/UX | User interface design, responsive layouts |
-| **Jo Yong-Min** | Frontend, Database, Data Analysis, AI, Documentation | AI model development, database design, statistics, search functionality |
-| **Chae Su-Bin** | Backend, UI/UX, Data, Presentation | Backend logic, UI design, data processing |
-| **Hyun Dong-Wook** | Backend, Database, Data, Documentation | Backend development, database management, technical documentation |
-
-### Project Lead Contributions (Jo Yong-Min)
-
-#### Core Responsibilities
-- **AI Model Development**: MediaPipe-based posture detection (85-90% accuracy)
-- **Database Design**: ERD design and Django ORM implementation
-- **Frontend Development**: Main page, community board UI
-- **Data Analysis**: Statistical algorithms and Chart.js visualizations
-- **Search Features**: Advanced search with filters and AJAX
-- **Documentation**: Technical documentation and README
-
----
-
-## 🏗️ Architecture
-
-### System Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         Frontend                             │
-│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │ React App   │  │ Chart.js     │  │ MediaPipe Client │  │
-│  │ (Dashboard) │  │ (Visualize)  │  │ (Pose Detection) │  │
-│  └─────────────┘  └──────────────┘  └──────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                            │ HTTP/REST API
-┌─────────────────────────────────────────────────────────────┐
-│                      Backend (Django)                        │
-│  ┌──────────┐  ┌──────────┐  ┌────────────┐  ┌──────────┐ │
-│  │ Auth     │  │ Service  │  │ Board      │  │ Chatbot  │ │
-│  │ Module   │  │ (Monitor)│  │ (Community)│  │ (AI Q&A) │ │
-│  └──────────┘  └──────────┘  └────────────┘  └──────────┘ │
-└─────────────────────────────────────────────────────────────┘
-                            │
-┌─────────────────────────────────────────────────────────────┐
-│                        Data Layer                            │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │ SQLite       │  │ ChromaDB     │  │ MediaPipe Models │  │
-│  │ (Main DB)    │  │ (Vector DB)  │  │ (AI Models)      │  │
-│  └──────────────┘  └──────────────┘  └──────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Key Workflows
-
-#### 1. Posture Monitoring Flow
-```
-User → Webcam Access → MediaPipe Pose Detection
-  → Angle Calculation → Posture Classification (Good/Bad)
-  → 1-min Bad Posture → Web Notification → User Alert
-  → Log to Database → Statistics Update
-```
-
-#### 2. Data Analysis Flow
-```
-PostureLog (Database) → Statistical Calculation (Python)
-  → Aggregation (Daily/Weekly/Monthly) → Chart.js Rendering
-  → User Dashboard Display
-```
-
----
-
-## 📊 Performance
-
-### AI Model Performance
-| Metric | Target | Achieved |
-|--------|--------|----------|
-| **Posture Detection Accuracy** | 80% | **85-90%** ✅ |
-| **Processing Speed (FPS)** | 25 FPS | **30 FPS** ✅ |
-| **Environment Adaptability** | 70% | **85%** ✅ |
-
-### System Performance
-| Metric | Target | Achieved |
-|--------|--------|----------|
-| **Search Response Time** | 0.5s | **0.3s** ✅ |
-| **Page Load Time** | 2s | **1s** ✅ |
-| **Web Notification Delay** | 3s | **1.5s** ✅ |
-| **Database Query Speed** | - | **70% faster** (with indexing) ✅ |
-
-### User Experience
-- ✅ **Mobile Responsive**: 100% compatibility across devices
-- ✅ **Cross-Browser Support**: Chrome, Firefox, Safari, Edge
-- ✅ **Accessibility**: WCAG 2.1 AA compliant
-- ✅ **Uptime**: 99.5% availability during testing period
-
----
-
-## 🌐 Live Demo
-
-- **Portfolio Landing Page**: [https://joymin5655.github.io/KT-AIVLE-SCHOOL/](https://joymin5655.github.io/KT-AIVLE-SCHOOL/)
-- **Source Repository**: [https://github.com/joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
-- **Original Project**: [KT-AIVLE-SCHOOL by joymin5655](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
-
----
-
-## 📄 License
-
-This project was developed for educational purposes as part of the **KT AIVLE School 3rd Cohort** curriculum.
-
-### Educational Use Only
-- ✅ Study and learning
-- ✅ Portfolio demonstration
-- ✅ Academic reference
-
-### Restrictions
-- ❌ Commercial use without permission
-- ❌ Redistribution without attribution
-- ❌ Claiming authorship
-
----
-
-## 🙏 Acknowledgments
-
-- **KT AIVLE School** for providing the learning platform and resources
-- **Team 10 Members** for their dedication and collaboration
-- **Original Repository**: [joymin5655/KT-AIVLE-SCHOOL](https://github.com/joymin5655/KT-AIVLE-SCHOOL)
-- **MediaPipe** by Google for pose estimation technology
-- **Django Community** for the robust web framework
-- **React Team** for the modern UI library
-
----
-
-## 📞 Contact
-
-For questions or collaboration:
-- **GitHub Issues**: [Create an issue](https://github.com/joymin5655/KT-AIVLE-SCHOOL/issues)
-- **Original Author**: [joymin5655](https://github.com/joymin5655)
-- **Portfolio Maintainer**: [joymin5655](https://github.com/joymin5655)
-
----
-
-## 📈 Project Statistics
-
-- **Total Commits**: 337+
-- **Contributors**: 6 developers
-- **Development Modules**: 6 core modules
-- **Completion**: 100%
-- **Primary Languages**: Python (41%), CSS (29.5%), HTML (15.8%), JavaScript (5.3%)
-- **Lines of Code**: 10,000+ (estimated)
-
----
-
-## 🔄 Project Status
-
-| Feature | Status |
-|---------|--------|
-| Core Functionality | ✅ Complete |
-| AI Model Training | ✅ Complete |
-| Backend API | ✅ Complete |
-| Frontend Dashboard | ✅ Complete |
-| Testing | ✅ Complete |
-| Documentation | ✅ Complete |
-| Deployment | 🚀 GitHub Pages Active |
-
----
-
-**Last Updated**: November 13, 2024
-**Version**: 3.0
-
----
-
-<p align="center">
-  <strong>Built with ❤️ by Team 10 | KT AIVLE School 3rd Cohort</strong>
-</p>
-
-<p align="center">
-  <sub>© 2024 Posture Keeper - All Rights Reserved</sub>
-</p>
+<p align="center"><sub>© 2024 Posture Keeper · Team 10 · KT AIVLE School 4기</sub></p>
