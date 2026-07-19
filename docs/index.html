@@ -1,824 +1,606 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Posture Keeper - AI-Powered Posture Monitoring System</title>
-    <meta name="description" content="AI-Based Health Management Web Service for Real-Time Posture Analysis - KT AIVLE School Team 10">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>바른자세 지킴이 · Posture Keeper — System Blueprint</title>
+<meta name="description" content="Posture Keeper (바른자세 지킴이) — 웹캠만으로 실시간 자세를 감지하는 AI 헬스케어 웹 서비스. KT AIVLE School 4기 Team 10. 전체 시스템 아키텍처 설계도.">
+<style>
+:root{
+  --bg:#0b2545;          /* cyanotype prussian navy */
+  --bg-2:#0a1f3c;        /* panel */
+  --bg-3:#0e2a52;        /* raised node */
+  --ink:#e4eefb;         /* blueprint white */
+  --ink-dim:#9db9d6;     /* captions */
+  --line:#5fb0d9;        /* drafting cyan */
+  --line-soft:rgba(120,190,235,.28);
+  --grid:rgba(120,190,235,.09);
+  --amber:#ffce54;       /* pencil / data-flow highlight */
+  --amber-dim:rgba(255,206,84,.35);
+  --danger:#ff7a70;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,"Cascadia Code",monospace;
+  --sans:"Helvetica Neue",Arial,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sheet-max:1180px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+    radial-gradient(1200px 600px at 80% -5%,rgba(95,176,217,.10),transparent 60%);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px,100% 100%;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono)}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
-        }
+/* ---------- nav ---------- */
+nav{
+  position:fixed;top:0;left:0;width:100%;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.7rem clamp(1rem,4vw,2.4rem);
+  background:rgba(9,25,50,.82);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line-soft);
+}
+nav .brand{font-family:var(--mono);font-size:.82rem;letter-spacing:.12em;color:var(--line)}
+nav .brand b{color:var(--ink)}
+nav ul{list-style:none;display:flex;gap:clamp(.6rem,2vw,1.7rem);flex-wrap:wrap;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em}
+nav ul a{color:var(--ink-dim);padding:.2rem 0;border-bottom:1px solid transparent;transition:.2s}
+nav ul a:hover{color:var(--amber);border-bottom-color:var(--amber)}
+.nav-hide{display:none}
+@media(min-width:760px){.nav-hide{display:inline}}
 
-        /* Navigation */
-        nav {
-            background: rgba(0, 0, 0, 0.9);
-            padding: 1rem 2rem;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
+/* ---------- layout ---------- */
+.sheet{max-width:var(--sheet-max);margin:0 auto;padding:clamp(3.4rem,7vw,6rem) clamp(1.1rem,4vw,2rem)}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;color:var(--line);text-transform:uppercase;display:flex;align-items:center;gap:.7rem}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--line)}
+h2.title{font-size:clamp(1.5rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.01em;margin:.7rem 0 .3rem}
+h2.title .en{display:block;font-family:var(--mono);font-size:.8rem;font-weight:500;letter-spacing:.14em;color:var(--ink-dim);margin-top:.35rem}
+.lede{color:var(--ink-dim);max-width:60ch;margin-top:.7rem}
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
+/* ---------- hero ---------- */
+header.hero{position:relative;padding-top:5.5rem;min-height:100vh;display:flex;align-items:center;
+  max-width:var(--sheet-max);margin:0 auto;padding-left:clamp(1.1rem,4vw,2rem);padding-right:clamp(1.1rem,4vw,2rem)}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:2.4rem;width:100%;align-items:center}
+@media(min-width:940px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:3rem}}
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-        }
+/* drawing title block */
+.titleblock{border:1px solid var(--line-soft);background:linear-gradient(180deg,rgba(14,42,82,.6),rgba(10,31,60,.6))}
+.titleblock .tb-top{padding:1.6rem 1.6rem 1.2rem}
+.tb-tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--amber)}
+.tb-h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;line-height:1.02;letter-spacing:-.02em;margin:.5rem 0 .2rem}
+.tb-h1 .ko{display:block}
+.tb-h1 .en{display:block;font-family:var(--mono);font-size:clamp(.85rem,2.4vw,1.05rem);font-weight:500;letter-spacing:.12em;color:var(--line);margin-top:.5rem}
+.tb-sub{color:var(--ink-dim);margin-top:.9rem;max-width:46ch}
+.tb-meta{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:.68rem}
+.tb-meta div{padding:.7rem .8rem;border-right:1px solid var(--line-soft)}
+.tb-meta div:last-child{border-right:none}
+.tb-meta span{display:block;color:var(--ink-dim);letter-spacing:.14em;font-size:.6rem;margin-bottom:.25rem}
+.tb-meta b{color:var(--ink);font-weight:600;letter-spacing:.04em}
+.cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.6rem}
+.btn{font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;padding:.72rem 1.15rem;border:1px solid var(--line);color:var(--ink);transition:.2s;display:inline-flex;align-items:center;gap:.5rem}
+.btn:hover{background:var(--line);color:var(--bg)}
+.btn.primary{background:var(--amber);border-color:var(--amber);color:#3a2a00;font-weight:700}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn small{opacity:.7;font-size:.66rem}
 
-        nav a:hover {
-            background: #667eea;
-            color: white;
-        }
+/* hero figure: pose-landmark skeleton = node graph signature */
+.figure{position:relative;aspect-ratio:1/1;border:1px solid var(--line-soft);background:
+  radial-gradient(circle at 50% 42%,rgba(95,176,217,.12),transparent 62%);overflow:hidden}
+.figure figcaption{position:absolute;left:0;bottom:0;width:100%;font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;color:var(--ink-dim);padding:.55rem .8rem;border-top:1px solid var(--line-soft);background:rgba(10,31,60,.55);display:flex;justify-content:space-between}
+.skeleton{width:100%;height:100%;display:block}
+.bone{stroke:var(--line);stroke-width:1.6;fill:none;stroke-linecap:round;opacity:.85}
+.bone.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.5s ease forwards}
+.joint{fill:var(--bg);stroke:var(--line);stroke-width:1.6}
+.joint.key{stroke:var(--amber);animation:pulse 2.6s ease-in-out infinite}
+.jlabel{font-family:var(--mono);font-size:9px;fill:var(--ink-dim);letter-spacing:.05em}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{r:3.4;opacity:1}50%{r:5.4;opacity:.55}}
 
-        /* Hero Section */
-        .hero {
-            margin-top: 60px;
-            padding: 100px 2rem;
-            text-align: center;
-            color: white;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: calc(100vh - 60px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
 
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.8s ease-out;
-        }
+/* ---------- purpose ---------- */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.9rem;margin-top:1.8rem}
+.prob{border:1px solid var(--line-soft);padding:1rem 1.05rem;background:var(--bg-2)}
+.prob .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--amber)}
+.prob b{display:block;margin:.35rem 0 .15rem;font-size:1.02rem}
+.prob p{font-size:.83rem;color:var(--ink-dim)}
+.flowline{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .7rem;margin-top:2rem;font-family:var(--mono);font-size:.78rem}
+.flowline .step{border:1px solid var(--line-soft);padding:.55rem .8rem;background:var(--bg-3)}
+.flowline .step.hot{border-color:var(--amber);color:var(--amber)}
+.flowline .arr{color:var(--line)}
 
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            animation: slideUp 0.8s ease-out;
-        }
+/* ---------- architecture blueprint ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:1.1rem;margin:1.6rem 0 1.2rem;font-family:var(--mono);font-size:.7rem;color:var(--ink-dim)}
+.legend i{display:inline-block;width:26px;height:0;vertical-align:middle;margin-right:.45rem}
+.lg-live{border-top:2px solid var(--amber)}
+.lg-req{border-top:2px solid var(--line)}
+.lg-off{border-top:2px dashed var(--line)}
+.lg-no{border-top:2px dashed var(--danger)}
 
-        .hero .subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            max-width: 800px;
-            line-height: 1.6;
-        }
+.arch-scroll{overflow-x:auto;padding-bottom:.6rem}
+.arch{min-width:860px;display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+.pipe{display:flex;flex-direction:column;gap:0}
+.pipe-h{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--line);padding:.5rem .2rem;border-bottom:1px solid var(--line-soft);margin-bottom:.9rem;display:flex;justify-content:space-between}
+.pipe-h .n{color:var(--ink-dim)}
+.node{border:1px solid var(--line-soft);background:var(--bg-3);padding:.8rem .9rem;position:relative}
+.node .t{font-weight:700;font-size:.94rem;display:flex;align-items:center;gap:.5rem}
+.node .s{font-family:var(--mono);font-size:.68rem;color:var(--ink-dim);margin-top:.25rem;letter-spacing:.02em}
+.node.core{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber-dim) inset}
+.node.core .t{color:var(--amber)}
+.node.ext{background:var(--bg-2);border-style:dashed}
+.conn{height:30px;margin:0 auto;width:2px;background:linear-gradient(var(--line),var(--line));position:relative}
+.conn::after{content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--line)}
+.conn.hot{background:var(--amber)}
+.conn.hot::after{border-top-color:var(--amber)}
+.conn.off{background:repeating-linear-gradient(var(--line) 0 5px,transparent 5px 10px)}
+.conn.off::after{border-top-color:var(--line)}
+.conn .ep{position:absolute;left:calc(50% + 10px);top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--mono);font-size:.63rem;color:var(--amber);letter-spacing:.02em}
+.conn.req .ep{color:var(--line)}
+.conn.off .ep{color:var(--ink-dim)}
+.pipe.dim .node{opacity:.85}
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.stores{margin-top:1.4rem;border-top:1px dashed var(--line-soft);padding-top:1.4rem}
+.stores-h{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--line);margin-bottom:.9rem}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem}
+.store{border:1px solid var(--line-soft);background:var(--bg-2);padding:.85rem .9rem}
+.store b{font-size:.9rem}
+.store .s{font-family:var(--mono);font-size:.66rem;color:var(--ink-dim);margin-top:.3rem}
+.store.ext{border-style:dashed}
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.detached{margin-top:1.4rem;border:2px dashed var(--danger);background:rgba(255,122,112,.06);padding:1rem 1.1rem;display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap}
+.detached .tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;color:var(--danger);border:1px solid var(--danger);padding:.2rem .5rem;white-space:nowrap}
+.detached p{font-size:.86rem;color:var(--ink-dim)}
+.detached b{color:var(--ink)}
 
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 1rem;
-        }
+/* ---------- ML pipeline ---------- */
+.ml{display:grid;grid-template-columns:1fr;gap:0;margin-top:1.6rem}
+.ml-stage{border:1px solid var(--line-soft);background:var(--bg-2);padding:1rem 1.1rem;position:relative}
+.ml-stage+.ml-stage{margin-top:1.9rem}
+.ml-stage::before{content:attr(data-step);position:absolute;top:-1px;right:-1px;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--bg);background:var(--line);padding:.2rem .5rem}
+.ml-stage h4{font-size:1rem;display:flex;gap:.6rem;align-items:baseline}
+.ml-stage h4 span{font-family:var(--mono);font-size:.7rem;color:var(--line);letter-spacing:.1em}
+.ml-stage p{font-size:.85rem;color:var(--ink-dim);margin-top:.4rem}
+.ml-stage code{font-family:var(--mono);font-size:.78rem;color:var(--amber);background:rgba(255,206,84,.08);padding:.05rem .3rem}
+.ml-stage+.ml-stage::after{content:"▼";position:absolute;top:-1.55rem;left:50%;transform:translateX(-50%);color:var(--line);font-size:.7rem}
+.classes{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.4rem;font-family:var(--mono);font-size:.72rem}
+.cls{border:1px solid var(--line-soft);padding:.4rem .7rem}
+.cls b{color:var(--amber)}
+.cls.good b{color:var(--line)}
 
-        .cta-button {
-            background: white;
-            color: #667eea;
-            padding: 15px 35px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+/* ---------- tables / cards ---------- */
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.85rem;margin-top:1.7rem}
+.app{border:1px solid var(--line-soft);background:var(--bg-2);padding:.95rem 1rem}
+.app .name{font-family:var(--mono);color:var(--line);font-size:.86rem;letter-spacing:.04em}
+.app p{font-size:.84rem;color:var(--ink-dim);margin-top:.4rem}
 
-        .cta-button:hover {
-            background: #f0f0f0;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
+.stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.85rem;margin-top:1.7rem}
+.layer{border:1px solid var(--line-soft);padding:.9rem 1rem;background:var(--bg-2)}
+.layer .lh{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;color:var(--amber);margin-bottom:.55rem}
+.chip{display:inline-block;font-family:var(--mono);font-size:.72rem;border:1px solid var(--line-soft);padding:.22rem .5rem;margin:.2rem .25rem 0 0;color:var(--ink)}
+.note-live{color:var(--line)} .note-demo{color:var(--ink-dim)}
 
-        .cta-button.primary {
-            background: #fff;
-            color: #667eea;
-            font-size: 1.2rem;
-            padding: 18px 40px;
-        }
+.routes{margin-top:1.7rem;border:1px solid var(--line-soft);font-family:var(--mono);font-size:.78rem;overflow-x:auto}
+.routes .row{display:grid;grid-template-columns:220px 1fr;border-bottom:1px solid var(--line-soft)}
+.routes .row:last-child{border-bottom:none}
+.routes .row>div{padding:.55rem .8rem}
+.routes .row .m{color:var(--amber);border-right:1px solid var(--line-soft);white-space:nowrap}
+.routes .row .d{color:var(--ink-dim)}
+.routes .row.head .m,.routes .row.head .d{color:var(--line);letter-spacing:.1em}
 
-        .cta-button.secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
-        }
+/* ---------- my contribution badges ---------- */
+.lg-mine{display:inline-block;width:14px;height:14px;margin-right:.45rem;color:var(--amber);vertical-align:middle;line-height:14px;text-align:center}
+.node.mine{border-color:var(--amber);box-shadow:-3px 0 0 0 var(--amber) inset}
+.node .pin{position:absolute;top:-9px;right:-1px;font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;color:#3a2a00;background:var(--amber);padding:.1rem .4rem;font-weight:700}
+.detached .solo{display:block;margin-top:.5rem;font-family:var(--mono);font-size:.7rem;color:var(--amber)}
 
-        .cta-button.secondary:hover {
-            background: white;
-            color: #667eea;
-        }
+/* ---------- contribution section ---------- */
+.contrib{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.85rem;margin-top:1.7rem}
+.contrib .c{border:1px solid var(--line-soft);background:var(--bg-2);padding:.95rem 1rem;border-left:3px solid var(--amber);position:relative}
+.contrib .c .h{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}
+.contrib .c .h b{font-size:.98rem}
+.contrib .c .grade{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--amber);border:1px solid var(--amber-dim);padding:.1rem .4rem;white-space:nowrap}
+.contrib .c p{font-size:.84rem;color:var(--ink-dim);margin-top:.4rem}
+.contrib .c .ev{font-family:var(--mono);font-size:.66rem;color:var(--line);margin-top:.5rem;word-break:break-all}
+.honesty{margin-top:1.4rem;font-size:.82rem;color:var(--ink-dim);border-left:2px solid var(--line-soft);padding-left:1rem}
+.honesty b{color:var(--ink)}
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
+/* ---------- team ---------- */
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin-top:1.7rem}
+.member{border:1px solid var(--line-soft);padding:.9rem 1rem;background:var(--bg-2);font-family:var(--mono);font-size:.8rem}
+.member b{display:block;color:var(--ink);letter-spacing:.03em}
+.member span{color:var(--ink-dim);font-size:.68rem}
+.member.owner{border-color:var(--amber)}
+.member.owner b{color:var(--amber)}
+.credit{margin-top:1.6rem;font-size:.82rem;color:var(--ink-dim);border-left:2px solid var(--line-soft);padding-left:1rem}
+.credit code{font-family:var(--mono);color:var(--line)}
 
-        /* Section Styles */
-        section {
-            padding: 60px 0;
-            background: white;
-            margin: 0;
-        }
+footer{border-top:1px solid var(--line-soft);margin-top:2rem}
+footer .in{max-width:var(--sheet-max);margin:0 auto;padding:1.6rem clamp(1.1rem,4vw,2rem);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem;font-family:var(--mono);font-size:.7rem;color:var(--ink-dim)}
+footer a{color:var(--line)}
 
-        section:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #667eea;
-        }
-
-        /* Demo Features */
-        .demo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .demo-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border-left: 5px solid #667eea;
-            text-align: center;
-        }
-
-        .demo-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .demo-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .demo-card h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .demo-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .demo-link {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .demo-link:hover {
-            background: #764ba2;
-            transform: scale(1.05);
-        }
-
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .project-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border-left: 5px solid #667eea;
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .project-card h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .project-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .project-tag {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Features */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .feature {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .feature p {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .stat-box {
-            background: #667eea;
-            color: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        /* Info Box */
-        .info-box {
-            background: #667eea;
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .info-box a {
-            color: white;
-            text-decoration: underline;
-            font-weight: bold;
-            transition: opacity 0.3s ease;
-        }
-
-        .info-box a:hover {
-            opacity: 0.8;
-        }
-
-        /* Footer */
-        footer {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-        }
-
-        footer p {
-            margin: 0.5rem 0;
-        }
-
-        .footer-links {
-            margin-top: 1rem;
-        }
-
-        .footer-links a {
-            color: #667eea;
-            text-decoration: none;
-            margin: 0 1rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: #764ba2;
-        }
-
-        /* Badges */
-        .badges {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            h2 {
-                font-size: 2rem;
-            }
-
-            nav ul {
-                gap: 1rem;
-            }
-
-            .cta-button {
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-        }
-
-        /* Alert Box */
-        .alert-box {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .alert-box h3 {
-            color: #856404;
-            margin-bottom: 0.5rem;
-        }
-
-        .alert-box p {
-            color: #856404;
-            margin: 0;
-        }
-    </style>
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none;transition:none}
+  .bone.draw{stroke-dashoffset:0}
+}
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <ul>
-            <li><a href="#overview">Overview</a></li>
-            <li><a href="#demo">Live Demo</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#tech-stack">Tech Stack</a></li>
-            <li><a href="#team">Team</a></li>
-            <li><a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL">GitHub</a></li>
-        </ul>
-    </nav>
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <h1>🧘 Posture Keeper</h1>
-        <p>AI-Powered Posture Monitoring System</p>
-        <p class="subtitle">
-            Real-time posture analysis using only your webcam. No additional hardware required.<br>
-            Get instant feedback, stretching guidance, and track your improvement over time.
-        </p>
-        <div class="badges">
-            <span class="badge">🐍 Python 3.11</span>
-            <span class="badge">⚡ Django 4.2</span>
-            <span class="badge">⚛️ React 19</span>
-            <span class="badge">🤖 MediaPipe AI</span>
-            <span class="badge">📊 Chart.js</span>
+<nav>
+  <div class="brand">◳ <b>Posture Keeper</b> <span class="nav-hide">· 바른자세 지킴이</span></div>
+  <ul>
+    <li><a href="#purpose">01 목적</a></li>
+    <li><a href="#architecture">02 설계도</a></li>
+    <li><a href="#ml">03 ML</a></li>
+    <li><a href="#modules" class="nav-hide">04 모듈</a></li>
+    <li><a href="#stack" class="nav-hide">05 스택</a></li>
+    <li><a href="#contribution">06 내기여</a></li>
+    <li><a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO / TITLE BLOCK (Sheet 00) ===== -->
+<header class="hero">
+  <div class="hero-grid">
+    <div class="titleblock">
+      <div class="tb-top">
+        <div class="tb-tag">SHEET 00 · SYSTEM OVERVIEW</div>
+        <h1 class="tb-h1">
+          <span class="ko">바른자세 지킴이</span>
+          <span class="en">POSTURE KEEPER</span>
+        </h1>
+        <p class="tb-sub">웹캠 하나로 실시간 자세를 감지해 나쁜 자세를 잡아내고, 스트레칭과 AI 상담으로 교정을 돕는 헬스케어 웹 서비스. <span class="mono" style="color:var(--ink)">No extra hardware — a webcam is enough.</span></p>
+        <div class="cta">
+          <a class="btn primary" href="#architecture">▤ 전체 설계도 보기</a>
+          <a class="btn" href="/KT-AIVLE-SCHOOL/dashboard/" target="_blank" rel="noopener">▶ 라이브 데모 <small>(React · mock)</small></a>
+          <a class="btn" href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">⌥ Repository</a>
         </div>
-        <div class="cta-buttons">
-            <a href="/KT-AIVLE-SCHOOL/dashboard/" class="cta-button primary">🚀 Launch Dashboard</a>
-            <a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" class="cta-button secondary">📂 View Repository</a>
-            <a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL/blob/main/README.md" class="cta-button secondary">📖 Documentation</a>
-        </div>
+      </div>
+      <div class="tb-meta">
+        <div><span>PROJECT</span><b>KT AIVLE 4기</b></div>
+        <div><span>TEAM</span><b>Team 10</b></div>
+        <div><span>PERIOD</span><b>2024.09–10</b></div>
+        <div><span>SCALE</span><b>6 weeks</b></div>
+      </div>
     </div>
 
-    <!-- Overview Section -->
-    <section id="overview">
-        <div class="container">
-            <h2>📋 Project Overview</h2>
-            <div class="info-box">
-                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">KT AIVLE School 3rd Cohort - Team 10</h3>
-                <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">
-                    Development Period: September 2024 - October 2024 (6 weeks)
-                </p>
-                <p style="font-size: 1rem;">
-                    Original Repository: <a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank">joymin5655/KT-AIVLE-SCHOOL</a>
-                </p>
-            </div>
-            <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 2rem; text-align: center; max-width: 900px; margin-left: auto; margin-right: auto;">
-                <strong>Posture Keeper</strong> is an AI-powered web application that monitors your posture in real-time
-                using only a webcam—no additional hardware required. The system detects poor posture, sends alerts,
-                and provides personalized stretching guidance to help office workers and remote employees maintain healthy habits.
-            </p>
+    <figure class="figure">
+      <svg class="skeleton" viewBox="0 0 320 320" role="img" aria-label="MediaPipe 포즈 랜드마크 스켈레톤 — 시스템 노드 그래프 모티프">
+        <!-- bones (drawn on) -->
+        <g>
+          <path class="bone draw" style="--len:70"  d="M160 70 L128 118"/>   <!-- head-Lsh -->
+          <path class="bone draw" style="--len:70"  d="M160 70 L192 118"/>   <!-- head-Rsh -->
+          <path class="bone draw" style="--len:64"  d="M128 118 L192 118"/>  <!-- shoulders -->
+          <path class="bone draw" style="--len:86"  d="M128 118 L104 196"/>  <!-- L upper arm -->
+          <path class="bone draw" style="--len:86"  d="M192 118 L216 196"/>  <!-- R upper arm -->
+          <path class="bone draw" style="--len:70"  d="M104 196 L92 262"/>   <!-- L forearm -->
+          <path class="bone draw" style="--len:70"  d="M216 196 L228 262"/>  <!-- R forearm -->
+          <path class="bone draw" style="--len:96"  d="M128 118 L152 210"/>  <!-- L torso -->
+          <path class="bone draw" style="--len:96"  d="M192 118 L168 210"/>  <!-- R torso -->
+          <path class="bone draw" style="--len:64"  d="M152 210 L168 210"/>  <!-- hip -->
+        </g>
+        <!-- joints -->
+        <g>
+          <circle class="joint key" cx="160" cy="70"  r="4"/>
+          <circle class="joint key" cx="128" cy="118" r="4"/>
+          <circle class="joint key" cx="192" cy="118" r="4"/>
+          <circle class="joint" cx="104" cy="196" r="3.4"/>
+          <circle class="joint" cx="216" cy="196" r="3.4"/>
+          <circle class="joint key" cx="92"  cy="262" r="4"/>
+          <circle class="joint key" cx="228" cy="262" r="4"/>
+          <circle class="joint" cx="152" cy="210" r="3.4"/>
+          <circle class="joint" cx="168" cy="210" r="3.4"/>
+        </g>
+        <text class="jlabel" x="168" y="64">nose · 0</text>
+        <text class="jlabel" x="196" y="116">shoulder · 12</text>
+        <text class="jlabel" x="232" y="264">wrist · 16</text>
+      </svg>
+      <figcaption><span>FIG.00 — POSE LANDMARKS</span><span>nodes = keypoints = components</span></figcaption>
+    </figure>
+  </div>
+</header>
 
-            <div class="stats" style="margin-top: 3rem;">
-                <div class="stat-box">
-                    <div class="stat-number">85-90%</div>
-                    <div class="stat-label">AI Accuracy</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">30 FPS</div>
-                    <div class="stat-label">Real-time Speed</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">337+</div>
-                    <div class="stat-label">Commits</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">6</div>
-                    <div class="stat-label">Modules</div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ===== 01 PURPOSE ===== -->
+<section class="sheet" id="purpose">
+  <div class="reveal">
+    <div class="eyebrow">SHEET 01 · WHY</div>
+    <h2 class="title">프로젝트 목적<span class="en">THE PROBLEM &amp; THE APPROACH</span></h2>
+    <p class="lede">오래 앉아 일하는 사무직·재택근무자에게 잘못된 자세는 만성 질환으로 이어진다. Posture Keeper는 별도 장비 없이 <b style="color:var(--ink)">웹캠만으로</b> 자세를 실시간 진단하고, 나쁜 자세가 이어지면 알려준다.</p>
+  </div>
 
-    <!-- Live Demo Section -->
-    <section id="demo">
-        <div class="container">
-            <h2>🎮 Try Live Demo</h2>
-            <div class="alert-box">
-                <h3>📱 Interactive Demo Available</h3>
-                <p>Experience all features of Posture Keeper with our fully functional React dashboard!</p>
-            </div>
+  <div class="prob-grid reveal">
+    <div class="prob"><div class="k">TARGET 01</div><b>거북목</b><p>Forward-head / turtle-neck posture</p></div>
+    <div class="prob"><div class="k">TARGET 02</div><b>척추측만</b><p>Scoliosis</p></div>
+    <div class="prob"><div class="k">TARGET 03</div><b>오십견</b><p>Frozen shoulder</p></div>
+    <div class="prob"><div class="k">TARGET 04</div><b>만성요통</b><p>Chronic lower-back pain</p></div>
+  </div>
 
-            <div class="demo-grid">
-                <div class="demo-card">
-                    <div class="demo-icon">📊</div>
-                    <h3>Dashboard</h3>
-                    <p>View real-time statistics, posture trends, and personalized insights</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/" class="demo-link">Open Dashboard</a>
-                </div>
+  <div class="flowline reveal" aria-label="핵심 사용자 흐름">
+    <span class="step">웹캠 감지<br><small class="mono" style="color:var(--ink-dim)">webcam only</small></span>
+    <span class="arr">→</span>
+    <span class="step hot">1분 지속 불량 → 경고<br><small class="mono">bad posture · 1 min alert</small></span>
+    <span class="arr">→</span>
+    <span class="step">스트레칭 가이드<br><small class="mono" style="color:var(--ink-dim)">guided stretch</small></span>
+    <span class="arr">→</span>
+    <span class="step">AI 챗봇 상담<br><small class="mono" style="color:var(--ink-dim)">RAG chatbot</small></span>
+  </div>
+</section>
 
-                <div class="demo-card">
-                    <div class="demo-icon">🎯</div>
-                    <h3>Posture Analysis</h3>
-                    <p>Test AI-powered real-time posture monitoring with your webcam</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/#/posture" class="demo-link">Try Now</a>
-                </div>
+<!-- ===== 02 ARCHITECTURE BLUEPRINT ===== -->
+<section class="sheet" id="architecture">
+  <div class="reveal">
+    <div class="eyebrow">SHEET 02 · SYSTEM ARCHITECTURE</div>
+    <h2 class="title">전체 아키텍처 설계도<span class="en">AS-BUILT — REAL STRUCTURE, NOT IDEALIZED</span></h2>
+    <p class="lede">실제로 동작하는 앱은 <b style="color:var(--ink)">Django 서버렌더 템플릿 + jQuery</b>다. GitHub Pages의 React 대시보드는 <b style="color:var(--danger)">목업 데이터 데모</b>로, 백엔드와 연결돼 있지 않다. 아래는 코드에서 확인한 그대로의 구조다.</p>
+    <div class="legend">
+      <span><i class="lg-live"></i>실시간 요청 (live loop)</span>
+      <span><i class="lg-req"></i>요청/조회 (request)</span>
+      <span><i class="lg-off"></i>오프라인 적재 (offline ingest)</span>
+      <span><i class="lg-no"></i>미연결 (not wired)</span>
+<span><i class="lg-mine">◆</i>조용민 담당 · Jo Yong-Min (발표자료·git 근거)</span>
+    </div>
+  </div>
 
-                <div class="demo-card">
-                    <div class="demo-icon">🤸</div>
-                    <h3>Stretching Guide</h3>
-                    <p>Follow interactive stretching exercises with real-time verification</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/#/stretching" class="demo-link">Start Exercise</a>
-                </div>
+  <div class="arch-scroll reveal">
+    <div class="arch">
 
-                <div class="demo-card">
-                    <div class="demo-icon">📈</div>
-                    <h3>Statistics</h3>
-                    <p>Analyze your posture data with beautiful charts and visualizations</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/#/statistics" class="demo-link">View Stats</a>
-                </div>
+      <!-- COL 1: POSTURE -->
+      <div class="pipe">
+        <div class="pipe-h"><span>A · POSTURE ENGINE</span><span class="n">core</span></div>
+        <div class="node"><div class="t">👁 Webcam</div><div class="s">getUserMedia() · canvas 3s</div></div>
+        <div class="conn hot"><span class="ep">capture.js</span></div>
+        <div class="node mine"><span class="pin">◆ UI</span><div class="t">Django · service.html</div><div class="s">jQuery $.ajax (live app)</div></div>
+        <div class="conn hot req"><span class="ep">POST /service/send_image/</span></div>
+        <div class="node core mine"><span class="pin">◆ 통계</span><div class="t">service view</div><div class="s">views.py · good/bad 비율 집계</div></div>
+        <div class="conn hot"><span class="ep">MediaPipe Holistic</span></div>
+        <div class="node"><div class="t">preprocessing.py</div><div class="s">landmarks · dist · angles</div></div>
+        <div class="conn hot"><span class="ep">feature vector</span></div>
+        <div class="node core mine"><span class="pin">◆ 자세모델</span><div class="t">XGBoost .pkl</div><div class="s">pose_classification_model</div></div>
+        <div class="conn hot"><span class="ep">write PostureDetection</span></div>
+        <div class="node ext"><div class="t">→ SQLite ▾</div><div class="s">+ JSON {class_name} back to UI</div></div>
+      </div>
 
-                <div class="demo-card">
-                    <div class="demo-icon">💬</div>
-                    <h3>AI Chatbot</h3>
-                    <p>Get instant answers to your posture and health questions</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/#/chatbot" class="demo-link">Chat Now</a>
-                </div>
+      <!-- COL 2: CHATBOT -->
+      <div class="pipe">
+        <div class="pipe-h"><span>B · RAG CHATBOT</span><span class="n">langchain</span></div>
+        <div class="node"><div class="t">💬 chatbot.html</div><div class="s">fetch() chat UI</div></div>
+        <div class="conn req"><span class="ep">POST /chatbot/</span></div>
+        <div class="node core"><div class="t">chatbot view</div><div class="s">OpenAIFunctionsAgent</div></div>
+        <div class="conn req"><span class="ep">gpt-3.5-turbo-1106</span></div>
+        <div class="node"><div class="t">LangChain agent</div><div class="s">retriever tool + session memory</div></div>
+        <div class="conn off"><span class="ep">retrieve / embed</span></div>
+        <div class="node ext"><div class="t">→ ChromaDB ▾</div><div class="s">+ OpenAI API ▾</div></div>
+        <div class="conn off"><span class="ep">offline: faq.csv → embeddings</span></div>
+        <div class="node ext"><div class="t">complete_team10_faq.csv</div><div class="s">CSVLoader · chunk 500</div></div>
+      </div>
 
-                <div class="demo-card">
-                    <div class="demo-icon">📝</div>
-                    <h3>Community Board</h3>
-                    <p>Share tips and connect with other users in the community</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/#/board" class="demo-link">Visit Board</a>
-                </div>
+      <!-- COL 3: USERS & COMMUNITY -->
+      <div class="pipe">
+        <div class="pipe-h"><span>C · USERS &amp; BOARD</span><span class="n">django</span></div>
+        <div class="node"><div class="t">🔐 accounts</div><div class="s">login · signup · profile</div></div>
+        <div class="conn req"><span class="ep">django-allauth</span></div>
+        <div class="node"><div class="t">OAuth</div><div class="s">Google · Naver</div></div>
+        <div class="conn req"><span class="ep">UserSession</span></div>
+        <div class="node"><div class="t">중복로그인 차단</div><div class="s">block_duplicate_login signal</div></div>
+        <div class="conn req"><span class="ep">CRUD · form POST</span></div>
+        <div class="node mine"><span class="pin">◆ 게시판</span><div class="t">📋 brd (board)</div><div class="s">Post · Comment · 검색기능</div></div>
+        <div class="conn req"><span class="ep">write + upload</span></div>
+        <div class="node ext"><div class="t">→ SQLite + media/ ▾</div><div class="s">brd_image/YYYY-MM-DD/</div></div>
+      </div>
 
-                <div class="demo-card">
-                    <div class="demo-icon">🎮</div>
-                    <h3>Gamification</h3>
-                    <p>Earn achievements and compete on leaderboards</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/#/gamification" class="demo-link">Play Now</a>
-                </div>
+    </div>
+  </div>
 
-                <div class="demo-card">
-                    <div class="demo-icon">👤</div>
-                    <h3>User Profile</h3>
-                    <p>Manage your settings and view your progress</p>
-                    <a href="/KT-AIVLE-SCHOOL/dashboard/#/profile" class="demo-link">View Profile</a>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- shared data + external -->
+  <div class="stores reveal">
+    <div class="stores-h">▾ DATA STORES &amp; EXTERNAL SERVICES</div>
+    <div class="store-grid">
+      <div class="store"><b>SQLite</b><div class="s mono">db.sqlite3 — PostureDetection, Profile, UserSession, Post/Comment</div></div>
+      <div class="store"><b>ChromaDB</b><div class="s mono">chroma.sqlite3 + HNSW index dir (fb91b25b…)</div></div>
+      <div class="store"><b>media/</b><div class="s mono">board image uploads</div></div>
+      <div class="store ext"><b>OpenAI API</b><div class="s mono">embeddings + chat completion</div></div>
+      <div class="store ext"><b>MediaPipe</b><div class="s mono">Holistic pose (in-process)</div></div>
+      <div class="store ext"><b>Google / Naver OAuth</b><div class="s mono">via django-allauth</div></div>
+      <div class="store ext"><b>MLflow <span style="color:var(--danger)">· legacy</span></b><div class="s mono">imported but inactive (joblib load 사용)</div></div>
+    </div>
+  </div>
 
-    <!-- Features Section -->
-    <section id="features">
-        <div class="container">
-            <h2>✨ Key Features</h2>
-            <div class="features">
-                <div class="feature">
-                    <div class="feature-icon">🤖</div>
-                    <h3>AI-Based Analysis</h3>
-                    <p>MediaPipe-powered pose estimation with 85-90% accuracy across different environments</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📹</div>
-                    <h3>Webcam Only</h3>
-                    <p>No external devices needed. Works with any standard webcam in various lighting conditions</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">⏱️</div>
-                    <h3>Real-time Monitoring</h3>
-                    <p>30 FPS processing speed with instant feedback after 1 minute of poor posture</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Smart Alerts</h3>
-                    <p>Web notifications triggered intelligently to help you maintain good posture</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🤸</div>
-                    <h3>Stretching Guide</h3>
-                    <p>10-second pose verification with visual guidance and retry mechanism</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📊</div>
-                    <h3>Data Visualization</h3>
-                    <p>Beautiful charts showing daily, weekly, and monthly posture trends</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- detached demo layer -->
+  <div class="detached reveal">
+    <span class="tag">NOT WIRED</span>
+    <p><b>React SPA — GitHub Pages (<span class="mono">docs/dashboard/</span>)</b><br>
+    포트폴리오/데모용 UI. 컴포넌트가 <span class="mono">mockData.js</span>만 읽고 Django 백엔드로의 axios/fetch 호출이 <b>0개</b>다. 위 실동작 파이프라인과는 <b>연결되지 않은 별도 레이어</b> — 화면 구성만 동일하다.
+    <span class="solo">◆ 이 React 데모 · GitHub Pages 배포 · 본 설계도 페이지 = 조용민 개인 단독 작업</span></p>
+  </div>
+</section>
 
-    <!-- Tech Stack Section -->
-    <section id="tech-stack">
-        <div class="container">
-            <h2>🛠️ Technology Stack</h2>
+<!-- ===== 03 ML PIPELINE ===== -->
+<section class="sheet" id="ml">
+  <div class="reveal">
+    <div class="eyebrow">SHEET 03 · AI / ML</div>
+    <h2 class="title">자세 분류 파이프라인<span class="en">POSE CLASSIFICATION — TRAIN &amp; INFER</span></h2>
+    <p class="lede">MediaPipe로 뽑은 신체 랜드마크를 거리·각도 피처로 가공해 XGBoost 분류기를 학습시킨다. 학습 산출물 <code style="font-family:var(--mono);color:var(--amber)">.pkl</code>이 그대로 서버에서 추론에 쓰인다.</p>
+  </div>
 
-            <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem;">Backend</h3>
-            <div class="stats">
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">Python 3.11</div>
-                    <div class="stat-label">Core Language</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">Django 4.2</div>
-                    <div class="stat-label">Web Framework</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">SQLite</div>
-                    <div class="stat-label">Database</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">REST API</div>
-                    <div class="stat-label">Architecture</div>
-                </div>
-            </div>
+  <div class="ml">
+    <div class="ml-stage reveal" data-step="01">
+      <h4><span>DATA</span>데이터 수집 · Data acquisition</h4>
+      <p><code>video_to_image.py</code> → <code>csv_data_acquisition.py</code>. 폴더명이 곧 라벨 (auto label_dict).</p>
+    </div>
+    <div class="ml-stage reveal" data-step="02">
+      <h4><span>PREP</span>전처리 · Feature engineering</h4>
+      <p>MediaPipe Holistic 33개 랜드마크 → 선택 <code>[0,2,5,7,8,11,12,15,16]</code> (nose·eyes·ears·shoulders·wrists). 좌표 x/y/z/visibility + 랜드마크 쌍 거리 + 눈간거리 정규화 + 삼각 각도(arccos).</p>
+    </div>
+    <div class="ml-stage reveal" data-step="03">
+      <h4><span>MODEL</span>모델링 · Modeling</h4>
+      <p>RandomForest · <b style="color:var(--amber)">XGBoost</b> · Deep Learning 비교 → XGBoost 채택. <code>joblib.dump(model, 'pose_classification_model.pkl')</code>.</p>
+    </div>
+    <div class="ml-stage reveal" data-step="04">
+      <h4><span>INFER</span>실시간 추론 · Realtime</h4>
+      <p>서버가 프레임마다 동일 전처리 후 <code>pose_model.predict()</code>. 스트레칭 검증은 확장 랜드마크셋 <code>[…13,14,21,22]</code>(elbows·thumbs) + <code>…_stretch_final.pkl</code>.</p>
+    </div>
+  </div>
 
-            <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem;">Frontend</h3>
-            <div class="stats">
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">React 19</div>
-                    <div class="stat-label">UI Framework</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">Vite 7.2</div>
-                    <div class="stat-label">Build Tool</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">Chart.js</div>
-                    <div class="stat-label">Visualization</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">Bootstrap</div>
-                    <div class="stat-label">Design System</div>
-                </div>
-            </div>
+  <div class="classes reveal" aria-label="출력 클래스">
+    <span class="cls good"><b>0</b> 정상 · good</span>
+    <span class="cls"><b>1–4</b> 불량 유형 · bad-posture types</span>
+    <span class="cls"><b>-1</b> 사람 없음 / 저가시성 · no person</span>
+  </div>
+</section>
 
-            <h3 style="color: #667eea; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem;">AI/ML</h3>
-            <div class="stats">
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">MediaPipe</div>
-                    <div class="stat-label">Pose Estimation</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">OpenCV</div>
-                    <div class="stat-label">Computer Vision</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">NumPy</div>
-                    <div class="stat-label">Computation</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 1.3rem;">Langchain</div>
-                    <div class="stat-label">Chatbot</div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ===== 04 BACKEND MODULES ===== -->
+<section class="sheet" id="modules">
+  <div class="reveal">
+    <div class="eyebrow">SHEET 04 · DJANGO APPS</div>
+    <h2 class="title">백엔드 모듈<span class="en">team10 · ROOT_URLCONF</span></h2>
+  </div>
+  <div class="apps reveal">
+    <div class="app"><div class="name">service</div><p>핵심 자세 엔진 — 이미지 → MediaPipe → XGBoost → PostureDetection 기록, 통계 집계.</p></div>
+    <div class="app"><div class="name">chatbot</div><p>RAG 챗봇 — LangChain 에이전트 + ChromaDB 리트리버 + 세션 메모리.</p></div>
+    <div class="app"><div class="name">accounts</div><p>인증·프로필 — django-allauth(Google·Naver), UserSession 중복로그인 차단.</p></div>
+    <div class="app"><div class="name">brd</div><p>커뮤니티 게시판 — Post/Comment CRUD, 이미지 업로드, 검색.</p></div>
+    <div class="app"><div class="name">home</div><p>랜딩·개인정보/약관 등 정적 안내 페이지.</p></div>
+    <div class="app"><div class="name">team10</div><p>프로젝트 설정 — settings·root urls·wsgi/asgi.</p></div>
+  </div>
+</section>
 
-    <!-- Team Section -->
-    <section id="team">
-        <div class="container">
-            <h2>👥 Team Information</h2>
-            <p style="text-align: center; font-size: 1.1rem; margin: 2rem 0;">
-                <strong>Team 10</strong> - 6 developers collaborated to complete this project
-            </p>
+<!-- ===== 05 STACK + ROUTES ===== -->
+<section class="sheet" id="stack">
+  <div class="reveal">
+    <div class="eyebrow">SHEET 05 · TECH STACK</div>
+    <h2 class="title">기술 스택<span class="en">WHAT ACTUALLY RUNS WHERE</span></h2>
+  </div>
+  <div class="stack reveal">
+    <div class="layer">
+      <div class="lh">CLIENT — LIVE APP</div>
+      <span class="chip">Django Templates</span><span class="chip">jQuery</span><span class="chip">vanilla JS</span><span class="chip">Chart.js</span>
+      <p class="mono note-live" style="font-size:.68rem;margin-top:.6rem">서버렌더 · 실제 동작</p>
+    </div>
+    <div class="layer">
+      <div class="lh">CLIENT — DEMO ONLY</div>
+      <span class="chip">React 19</span><span class="chip">Vite 7</span><span class="chip">react-router 7</span><span class="chip">Recharts</span>
+      <p class="mono note-demo" style="font-size:.68rem;margin-top:.6rem">GitHub Pages · mock 데이터</p>
+    </div>
+    <div class="layer">
+      <div class="lh">BACKEND</div>
+      <span class="chip">Python 3.11</span><span class="chip">Django 4.2</span><span class="chip">allauth</span><span class="chip">SQLite</span>
+    </div>
+    <div class="layer">
+      <div class="lh">AI / ML</div>
+      <span class="chip">MediaPipe</span><span class="chip">OpenCV</span><span class="chip">XGBoost</span><span class="chip">NumPy · pandas</span>
+    </div>
+    <div class="layer">
+      <div class="lh">CHATBOT</div>
+      <span class="chip">LangChain</span><span class="chip">ChromaDB</span><span class="chip">OpenAI</span><span class="chip">tiktoken</span>
+    </div>
+  </div>
 
-            <div class="stats" style="margin-top: 2rem;">
-                <div class="stat-box" style="background: #764ba2;">
-                    <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Kim Hyun-Joo</div>
-                    <div class="stat-label">FE, BE, UI/UX, Data</div>
-                </div>
-                <div class="stat-box" style="background: #667eea;">
-                    <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Lee Don-Gyu</div>
-                    <div class="stat-label">FE, BE, Presentation</div>
-                </div>
-                <div class="stat-box" style="background: #764ba2;">
-                    <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Lee Sung-Gyu</div>
-                    <div class="stat-label">FE, UI/UX</div>
-                </div>
-                <div class="stat-box" style="background: #667eea;">
-                    <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Jo Yong-Min</div>
-                    <div class="stat-label">FE, DB, Data, AI</div>
-                </div>
-                <div class="stat-box" style="background: #764ba2;">
-                    <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Chae Su-Bin</div>
-                    <div class="stat-label">BE, UI/UX, Data</div>
-                </div>
-                <div class="stat-box" style="background: #667eea;">
-                    <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Hyun Dong-Wook</div>
-                    <div class="stat-label">BE, DB, Data</div>
-                </div>
-            </div>
+  <div class="routes reveal" aria-label="실제 라우트">
+    <div class="row head"><div class="m">ROUTE</div><div class="d">역할 · role</div></div>
+    <div class="row"><div class="m">POST /service/send_image/</div><div class="d">자세 프레임 분류 → {class_name}</div></div>
+    <div class="row"><div class="m">POST /service/send_image_game/</div><div class="d">스트레칭 검증 게임</div></div>
+    <div class="row"><div class="m">GET /service/statistics/</div><div class="d">일·주 good/bad 통계 (Chart.js)</div></div>
+    <div class="row"><div class="m">GET·POST /chatbot/</div><div class="d">RAG 챗봇 대화</div></div>
+    <div class="row"><div class="m">/accounts/*</div><div class="d">login · signup · profile · allauth</div></div>
+    <div class="row"><div class="m">/brd/*</div><div class="d">게시판 CRUD · 검색 · 댓글</div></div>
+    <div class="row"><div class="m">/admin/</div><div class="d">Django admin</div></div>
+  </div>
+</section>
 
-            <div class="info-box" style="margin-top: 3rem;">
-                <p style="font-size: 1.1rem;">Original Project Lead</p>
-                <p style="margin-top: 1rem; font-size: 1.2rem;">
-                    <a href="https://github.com/joymin5655" target="_blank">🔗 joymin5655</a>
-                </p>
-            </div>
-        </div>
-    </section>
+<!-- ===== 06 TEAM ===== -->
+<!-- ===== 06 MY CONTRIBUTION ===== -->
+<section class="sheet" id="contribution">
+  <div class="reveal">
+    <div class="eyebrow">SHEET 06 · MY ROLE</div>
+    <h2 class="title">내가 맡은 부분<span class="en">JO YONG-MIN — WHAT I BUILT</span></h2>
+    <p class="lede">아래는 팀 <b style="color:var(--ink)">최종 발표자료 slide 4 "팀원 소개"</b>에 기재된 조용민 담당 항목이다(코드 경로로 대조). 최종 과제정의서 역할표 기준 공식 역할 = <span class="mono" style="color:var(--amber)">FE · BE · UI/UX · DB · 데이터 · 문서</span>.</p>
+  </div>
+  <div class="contrib reveal">
+    <div class="c">
+      <div class="h"><b>바른 자세 판별 AI 모델</b><span class="grade">발표자료 근거</span></div>
+      <p>웹캠 랜드마크 → 자세 클래스(정상/거북목 등)를 분류하는 모델. 발표자료 slide4에 조용민 담당으로 기재.</p>
+      <div class="ev">Posture_Classification/** · service/pose_classification_model.pkl ─ 단, git상 분류 .py 커밋 저자는 이성규(lsk74669): 노트북·모델링은 팀 공동으로 커밋이 합쳐진 것으로 보임</div>
+    </div>
+    <div class="c">
+      <div class="h"><b>메인 · 게시판 페이지 구현</b><span class="grade">근거 강함</span></div>
+      <p>메인/게시판 화면(Django 템플릿), 전역 layout과 SASS/CSS/이미지/웹폰트 정적자산. git 커밋은 프론트·UI에 집중.</p>
+      <div class="ev">templates/** · static/assets/{sass,css,js,images} · brd/templates</div>
+    </div>
+    <div class="c">
+      <div class="h"><b>검색 기능 (페이지 · 게시글)</b><span class="grade">근거 강함</span></div>
+      <p>커뮤니티 게시판의 제목/게시글 검색과 페이지 검색 기능 구현.</p>
+      <div class="ev">brd/views.py · brd/urls.py (search query)</div>
+    </div>
+    <div class="c">
+      <div class="h"><b>통계 기능 · 데이터 시각화</b><span class="grade">근거 강함</span></div>
+      <p>통계 페이지의 good/bad 자세 비율 집계(0-나눗셈 처리 포함)와 결과 시각화.</p>
+      <div class="ev">service/views.py (통계 비율) · 통계/시각화 템플릿</div>
+    </div>
+    <div class="c">
+      <div class="h"><b>DB 데이터 관리</b><span class="grade">발표자료 근거</span></div>
+      <p>SQLite 모델(PostureDetection·Post·Comment 등) 데이터 관리. 발표자료 slide4에 조용민 담당으로 기재.</p>
+      <div class="ev">*/models.py · db.sqlite3</div>
+    </div>
+    <div class="c">
+      <div class="h"><b>React 데모 · 배포 · 설계도</b><span class="grade">개인 단독</span></div>
+      <p>(팀 과제 이후) 포트폴리오용 React 대시보드, GitHub Pages 배포, 그리고 이 설계도 페이지까지 개인 포크에서 단독 작업.</p>
+      <div class="ev">src/frontend/** · docs/dashboard/** · docs/index.html</div>
+    </div>
+  </div>
+  <p class="honesty reveal">
+    <b>정직성 노트.</b> 위 항목은 팀 <b>최종 발표자료 slide4</b> 기재 기준이다. AI 파트는 팀이 분담했다 — <b>자세 판별 데이터 전처리·AI 설계·실행 알고리즘·Mlflow</b>는 이성규·이돈규, <b>스트레칭 기본 모델</b>은 채수빈, <b>모델 고도화</b>는 현동욱, <b>RAG 챗봇</b>은 김현주. 자세 판별 모델과 DB는 발표자료상 조용민 담당으로 기재됐으나, git 커밋 저자는 팀원과 합쳐져 있어 <b>공동 작업</b>으로 보는 것이 정확하다.
+  </p>
+</section>
 
-    <!-- Contact Section -->
-    <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-        <div class="container">
-            <h2 style="color: white;">📞 Get Started</h2>
-            <p style="text-align: center; font-size: 1.2rem; margin: 2rem 0;">
-                Ready to improve your posture? Try our demo now!
-            </p>
-            <div style="text-align: center; margin-top: 2rem;">
-                <a href="/KT-AIVLE-SCHOOL/dashboard/" class="cta-button primary" style="margin: 0 1rem;">🚀 Launch Dashboard</a>
-                <a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" class="cta-button" style="background: rgba(255,255,255,0.2); color: white; margin: 0 1rem;">📂 View on GitHub</a>
-            </div>
-            <div style="text-align: center; margin-top: 2rem;">
-                <p style="font-size: 0.9rem; opacity: 0.9;">
-                    Educational project developed for KT AIVLE School 3rd Cohort
-                </p>
-            </div>
-        </div>
-    </section>
+<!-- ===== 07 TEAM ===== -->
+<section class="sheet" id="team">
+  <div class="reveal">
+    <div class="eyebrow">SHEET 07 · CREDITS</div>
+    <h2 class="title">팀 &amp; 크레딧<span class="en">KT AIVLE SCHOOL 4TH COHORT · 수도권 AI 4반 — TEAM 10</span></h2>
+  </div>
+  <div class="team reveal">
+    <div class="member"><b>Kim Hyun-Joo</b><span>김현주</span></div>
+    <div class="member"><b>Lee Don-Gyu</b><span>이돈규</span></div>
+    <div class="member"><b>Lee Sung-Gyu</b><span>이성규</span></div>
+    <div class="member owner"><b>Jo Yong-Min ★</b><span>조용민 · this archive</span></div>
+    <div class="member"><b>Chae Su-Bin</b><span>채수빈</span></div>
+    <div class="member"><b>Hyun Dong-Wook</b><span>현동욱</span></div>
+  </div>
+  <p class="credit reveal">
+    원본 팀 저장소 <code>github.com/sbchae11/team10</code>을 팀원이었던 조용민이 개인 아카이브로 가져온 저장소가 <code>github.com/joymin5655/KT-AIVLE-SCHOOL</code>입니다.
+    교육용 미니프로젝트이며, 이 페이지는 그 프로젝트의 목적과 실제 시스템 구조를 기록한 설계도입니다.
+  </p>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <p style="font-size: 1.1rem; font-weight: bold;">&copy; 2024 Posture Keeper - Team 10</p>
-        <p>KT AIVLE School 3rd Cohort | Educational Project</p>
-        <div class="footer-links">
-            <a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL">GitHub Repository</a>
-            <a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL">Original Source</a>
-            <a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL/blob/main/README.md">Documentation</a>
-            <a href="/KT-AIVLE-SCHOOL/dashboard/">Launch Dashboard</a>
-        </div>
-        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
-            Hosted on GitHub Pages | Built with ❤️ by Team 10
-        </p>
-    </footer>
+<footer>
+  <div class="in">
+    <span>© 2024 Posture Keeper · Team 10 · KT AIVLE School</span>
+    <span><a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">GitHub ↗</a> · <a href="/KT-AIVLE-SCHOOL/dashboard/">Demo dashboard ↗</a></span>
+  </div>
+</footer>
 
-    <!-- Scroll Animation -->
-    <script>
-        // Smooth scroll for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add scroll animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.demo-card, .feature, .project-card').forEach(element => {
-            element.style.opacity = '0';
-            element.style.transform = 'translateY(20px)';
-            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(element);
-        });
-
-        // Add particle animation to hero
-        console.log('🎉 Posture Keeper - Welcome!');
-        console.log('📊 View Dashboard: ' + window.location.origin + '/KT-AIVLE-SCHOOL/dashboard/');
-    </script>
+<script>
+// scroll reveal
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+  var io=new IntersectionObserver(function(en){
+    en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});
+  },{threshold:.12});
+  els.forEach(function(e){io.observe(e);});
+})();
+</script>
 </body>
 </html>
