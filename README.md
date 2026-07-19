@@ -14,6 +14,7 @@
 ## 링크
 
 - **설계도 / 랜딩** — https://joymin5655.github.io/KT-AIVLE-SCHOOL/ (목적 + 전체 시스템 아키텍처 청사진, 한/영)
+- **▶ 라이브 데모 (백엔드 없이 실제 동작)** — https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/live/ — 실제 학습된 XGBoost 자세 모델을 ONNX로 변환하고 MediaPipe·전처리를 브라우저로 이식해, **웹캠 자세 판별이 GitHub Pages에서 실시간으로 동작**합니다. (영상은 기기 밖으로 전송되지 않음)
 - **제품 데모** — https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/ (실제 구축한 Django 화면 20페이지의 **정적 데모**)
   - 예: [통계](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/statistics.html) · [모니터링](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/service.html) · [게시판](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/board.html) · [챗봇](https://joymin5655.github.io/KT-AIVLE-SCHOOL/dashboard/chatbot.html)
 - **원본 저장소** — [sbchae11/team10](https://github.com/sbchae11/team10) (팀 원본) → 본 저장소는 팀원 조용민의 개인 아카이브
@@ -31,7 +32,18 @@
 | 데이터 | 실제 ML 추론 + SQLite | `mockData.js` 목업 (백엔드 호출 0) |
 | 백엔드 연결 | ✅ | ❌ |
 
-**GitHub Pages `docs/dashboard/`** 는 위 실제 Django 화면(home·서비스·통계·게시판·챗봇·회원 등 20페이지)을 **정적으로 변환한 제품 데모**입니다. 실시간 웹캠 자세판별·챗봇 응답은 백엔드(MediaPipe·XGBoost·LangChain)가 있어야 동작하므로, 정적 데모에서는 각 페이지 상단 배너로 안내합니다. (초기 React 목업은 `docs/_react-demo-backup/`에 보관.)
+**GitHub Pages `docs/dashboard/`** 는 위 실제 Django 화면(home·서비스·통계·게시판·챗봇·회원 등 20페이지)을 **정적으로 변환한 제품 데모**입니다. 챗봇 응답은 여전히 백엔드(LangChain)가 있어야 동작하므로 정적 데모에서는 배너로 안내합니다. (초기 React 목업은 `docs/_react-demo-backup/`에 보관.)
+
+**단, 실시간 자세 판별은 `docs/dashboard/live/`에서 백엔드 없이 실제로 동작합니다.** 서버 파이프라인(`/service/send_image/`)을 브라우저 클라이언트로 이식했습니다:
+
+| 서버(원본) | 브라우저(라이브 데모) |
+|---|---|
+| MediaPipe Holistic | MediaPipe **PoseLandmarker** (Tasks Vision, WASM · 같은 BlazePose 토폴로지) |
+| `preprocessing.py` 201차원 특징 | `live/posture-features.js` (동일 로직 이식) |
+| XGBoost `.pkl` | 같은 모델을 **ONNX 변환**, `onnxruntime-web`로 추론 |
+| SQLite 저장 + jQuery 알림 | 브라우저 내 상태 + Notification API (1분 나쁜자세 알림) |
+
+검증: JS 전처리 벡터는 파이썬 golden과 오차 **5e-6**, ONNX 추론은 원본 `.pkl`과 **라벨·확률이 일치**합니다. (랜드마크 추정 모델의 미세 차이로 실제 예측이 원본과 완전히 같지는 않을 수 있음.) 영상은 브라우저 안에서만 처리되고 서버로 전송되지 않습니다.
 
 ---
 
@@ -80,6 +92,8 @@ KT-AIVLE-SCHOOL/
 │   ├── index.html                  # 설계도/랜딩 (cyanotype 청사진, 한/영)
 │   ├── 404.html
 │   ├── dashboard/                  # 제품 데모 = 실제 Django 화면의 정적 변환본(20페이지 + static)
+│   │   ├── live/                    # 라이브 데모: 브라우저 자세판별 (MediaPipe + ONNX + posture-features.js)
+│   │   └── model/                   # pose_classification.onnx (XGBoost .pkl → ONNX 변환본)
 │   └── _react-demo-backup/         # 초기 React SPA 목업 (보관)
 └── src/
     ├── ai/                         # 자세/스트레칭 분류 (전처리·모델링 노트북·실시간 추론)

@@ -264,7 +264,8 @@ footer a{color:var(--line)}
         <p class="tb-sub">웹캠 하나로 실시간 자세를 감지해 나쁜 자세를 잡아내고, 스트레칭과 AI 상담으로 교정을 돕는 헬스케어 웹 서비스. <span class="mono" style="color:var(--ink)">No extra hardware — a webcam is enough.</span></p>
         <div class="cta">
           <a class="btn primary" href="#architecture">▤ 전체 설계도 보기</a>
-          <a class="btn" href="/KT-AIVLE-SCHOOL/dashboard/" target="_blank" rel="noopener">▶ 제품 데모 <small>(실제 화면)</small></a>
+          <a class="btn" href="/KT-AIVLE-SCHOOL/dashboard/live/" target="_blank" rel="noopener">◉ 라이브 데모 <small>(브라우저서 실제 동작)</small></a>
+          <a class="btn" href="/KT-AIVLE-SCHOOL/dashboard/" target="_blank" rel="noopener">▶ 제품 데모 <small>(정적 화면)</small></a>
           <a class="btn" href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">⌥ Repository</a>
         </div>
       </div>
@@ -419,9 +420,10 @@ footer a{color:var(--line)}
 
   <!-- detached demo layer -->
   <div class="detached reveal">
-    <span class="tag">STATIC DEMO</span>
+    <span class="tag">STATIC DEMO + LIVE</span>
     <p><b>제품 데모 — GitHub Pages (<span class="mono">docs/dashboard/</span>)</b><br>
-    실제 구축한 <b>Django 앱 화면(home · 서비스 · 통계 · 게시판 · 챗봇 등 20페이지)</b>을 정적으로 변환해 배포한 데모다. 실시간 웹캠 자세판별·챗봇 응답은 백엔드(MediaPipe · XGBoost · LangChain)가 있어야 동작한다.
+    실제 구축한 <b>Django 앱 화면(home · 서비스 · 통계 · 게시판 · 챗봇 등 20페이지)</b>을 정적으로 변환해 배포한 데모다.
+    <span class="solo" style="color:var(--accent,#5fb0d9)">◉ <b>라이브 데모(<span class="mono">docs/dashboard/live/</span>)</b> — 실제 학습된 XGBoost 자세 모델을 ONNX로 변환하고 MediaPipe·전처리를 브라우저로 이식해, <b>백엔드 없이 웹캠 자세판별이 실제로 동작</b>한다. JS 전처리는 파이썬 golden과 오차 5e-6, ONNX는 원본 .pkl과 라벨·확률 일치 검증.</span>
     <span class="solo">◇ 초기 포트폴리오용 React SPA 목업(<span class="mono">mockData.js</span> · 백엔드 호출 0)은 <span class="mono">docs/_react-demo-backup/</span>에 보관</span></p>
   </div>
 </section>
@@ -587,7 +589,7 @@ footer a{color:var(--line)}
 <footer>
   <div class="in">
     <span>© 2024 Posture Keeper · Team 10 · KT AIVLE School</span>
-    <span><a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">GitHub ↗</a> · <a href="/KT-AIVLE-SCHOOL/dashboard/">제품 데모 ↗</a></span>
+    <span><a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">GitHub ↗</a> · <a href="/KT-AIVLE-SCHOOL/dashboard/live/">라이브 데모 ↗</a> · <a href="/KT-AIVLE-SCHOOL/dashboard/">제품 데모 ↗</a></span>
   </div>
 </footer>
 

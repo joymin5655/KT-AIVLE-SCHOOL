@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실시간 자세 판별 — 바른자세 지킴이 (브라우저 실행)</title>
+<meta name="description" content="KT AIVLE 4기 10조 '바른자세 지킴이'의 자세 판별 파이프라인을 100% 브라우저에서 재현한 데모. MediaPipe PoseLandmarker + 실제 학습된 XGBoost 모델(ONNX)로 웹캠 자세를 실시간 분류합니다.">
+<style>
+  :root{
+    --bg:#071a2f; --bg2:#0b2545; --panel:#0d2a4a; --panel2:#0f2f52;
+    --line:#1b4470; --ink:#e8f1f8; --muted:#8fb2cf; --dim:#5f88a8;
+    --cyan:#5fb0d9; --amber:#ffce54; --good:#48d597; --bad:#ff6b6b;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(95,176,217,.12), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font:400 15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Apple SD Gothic Neo",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* honesty banner */
+  .banner{
+    background:var(--bg2);border-bottom:1px solid var(--line);
+    font-size:12.5px;color:var(--amber);line-height:1.5;
+    padding:8px 14px;text-align:center;
+  }
+  .banner a{color:var(--cyan)}
+
+  header.top{border-bottom:1px solid var(--line);padding:18px 0}
+  header.top .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .eyebrow{font:600 11px/1 var(--mono);letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+  .title{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:2px 0 0}
+  .title .en{color:var(--muted);font-weight:400;font-size:14px;margin-left:8px}
+  .navlinks{margin-left:auto;display:flex;gap:18px;font-size:13px}
+
+  main{padding:26px 0 60px}
+  .grid{display:grid;grid-template-columns:1.35fr 1fr;gap:22px}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+
+  .stage{
+    position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    background:#04101f;aspect-ratio:4/3;
+  }
+  .stage video,.stage canvas{position:absolute;inset:0;width:100%;height:100%}
+  .stage video{object-fit:cover;transform:scaleX(-1)}
+  .stage canvas{transform:scaleX(-1)}
+  .stage .placeholder{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;color:var(--muted)
+  }
+  .stage .placeholder .glyph{font-size:34px;opacity:.7}
+  .corner{position:absolute;top:10px;left:12px;z-index:3;font:600 10.5px/1 var(--mono);letter-spacing:.14em;color:var(--cyan);text-transform:uppercase;display:flex;align-items:center;gap:7px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--dim);box-shadow:0 0 0 0 rgba(72,213,151,.5)}
+  .dot.live{background:var(--good);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(72,213,151,.5)}70%{box-shadow:0 0 0 7px rgba(72,213,151,0)}100%{box-shadow:0 0 0 0 rgba(72,213,151,0)}}
+  .fps{position:absolute;bottom:10px;right:12px;z-index:3;font:600 11px/1 var(--mono);color:var(--dim);background:rgba(4,16,31,.6);padding:4px 7px;border-radius:6px}
+
+  .btn{
+    appearance:none;border:1px solid var(--cyan);background:rgba(95,176,217,.12);
+    color:var(--ink);font:600 14px/1 inherit;padding:12px 20px;border-radius:10px;cursor:pointer;
+    transition:background .15s
+  }
+  .btn:hover{background:rgba(95,176,217,.22)}
+  .btn.stop{border-color:var(--bad);background:rgba(255,107,107,.12)}
+  .btn[disabled]{opacity:.5;cursor:default}
+
+  /* status panel */
+  .panel{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,var(--panel),var(--panel2));padding:20px}
+  .verdict{
+    display:flex;align-items:baseline;gap:12px;border-radius:12px;padding:18px 20px;margin:-4px -4px 16px;
+    background:rgba(95,136,168,.10);border:1px solid var(--line);transition:background .25s,border-color .25s
+  }
+  .verdict.good{background:rgba(72,213,151,.12);border-color:rgba(72,213,151,.45)}
+  .verdict.bad{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.45)}
+  .verdict .label{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .verdict.good .label{color:var(--good)}
+  .verdict.bad .label{color:var(--bad)}
+  .verdict .cls{margin-left:auto;font:600 11px/1 var(--mono);color:var(--muted)}
+
+  .meter{margin:14px 0}
+  .meter .lab{display:flex;justify-content:space-between;font:600 11px/1 var(--mono);color:var(--muted);letter-spacing:.06em;margin-bottom:6px;text-transform:uppercase}
+  .track{height:8px;border-radius:6px;background:rgba(4,16,31,.6);overflow:hidden}
+  .track > i{display:block;height:100%;width:0;background:var(--cyan);transition:width .25s}
+
+  .probs{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+  .probs h4{margin:0 0 12px;font:600 11px/1 var(--mono);letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+  .prow{display:grid;grid-template-columns:96px 1fr 52px;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+  .prow .pt{color:var(--muted)}
+  .prow.top .pt{color:var(--ink);font-weight:600}
+  .pbar{height:7px;border-radius:5px;background:rgba(4,16,31,.6);overflow:hidden}
+  .pbar > i{display:block;height:100%;width:0;background:var(--dim);transition:width .25s}
+  .prow.top .pbar > i{background:var(--cyan)}
+  .prow .pv{text-align:right;font:600 12px/1 var(--mono);color:var(--muted)}
+
+  .alert{
+    margin-top:16px;border:1px solid rgba(255,107,107,.5);background:rgba(255,107,107,.1);
+    border-radius:10px;padding:12px 14px;font-size:13px;color:#ffd0d0;display:none
+  }
+  .alert.show{display:block}
+  .alert b{color:var(--bad)}
+
+  .timer{margin-top:16px;display:flex;gap:10px;align-items:center;font:600 12px/1 var(--mono);color:var(--muted)}
+  .timer .big{font-size:18px;color:var(--ink)}
+
+  .controls{display:flex;gap:12px;align-items:center;margin-bottom:22px;flex-wrap:wrap}
+  .status-line{font:500 13px/1.4 var(--mono);color:var(--muted)}
+
+  /* how it works */
+  .how{margin-top:34px;border-top:1px solid var(--line);padding-top:26px}
+  .how h3{font-size:15px;margin:0 0 4px}
+  .how p.sub{color:var(--muted);font-size:13px;margin:0 0 18px}
+  .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  @media(max-width:880px){.pipe{grid-template-columns:1fr 1fr}}
+  .step{border:1px solid var(--line);border-radius:10px;padding:12px;background:rgba(4,16,31,.35)}
+  .step .n{font:700 11px/1 var(--mono);color:var(--cyan)}
+  .step .t{font-weight:600;font-size:13px;margin:6px 0 4px}
+  .step .d{font-size:11.5px;color:var(--muted);line-height:1.45}
+  .note{margin-top:20px;font-size:12px;color:var(--dim);line-height:1.6}
+  .note code{font-family:var(--mono);color:var(--muted);font-size:11.5px}
+</style>
+</head>
+<body>
+
+<div class="banner">
+  ☉ 라이브 데모 — 이 페이지는 <b>백엔드 없이 100% 브라우저</b>에서 실행됩니다.
+  실제 학습된 XGBoost 자세 모델(ONNX)과 MediaPipe로 재현했습니다. 영상은 기기 밖으로 전송되지 않습니다.
+  <a href="../index.html">대시보드</a> · <a href="../../index.html">설계도</a>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Posture Keeper · Live Inference</div>
+      <div class="title">실시간 자세 판별<span class="en">Real-time posture classification, in-browser</span></div>
+    </div>
+    <nav class="navlinks">
+      <a href="../service.html">정적 데모</a>
+      <a href="../statistics.html">통계</a>
+      <a href="../../index.html">설계도 ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="controls">
+      <button id="start" class="btn">▶ 웹캠 켜고 판별 시작</button>
+      <button id="stop" class="btn stop" style="display:none">■ 중지</button>
+      <span id="status" class="status-line">모델 로딩 대기 중…</span>
+    </div>
+
+    <div class="grid">
+      <!-- video stage -->
+      <div>
+        <div class="stage" id="stage">
+          <span class="corner"><span class="dot" id="livedot"></span><span id="cornertxt">STANDBY</span></span>
+          <span class="fps" id="fps"></span>
+          <video id="video" playsinline muted style="display:none"></video>
+          <canvas id="overlay" style="display:none"></canvas>
+          <div class="placeholder" id="ph">
+            <div class="glyph">◉</div>
+            <div>웹캠을 켜면 골격이 추적되고, 자세가 5개 클래스로 실시간 분류됩니다.<br>카메라 권한이 필요합니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- status panel -->
+      <div>
+        <div class="panel">
+          <div class="verdict" id="verdict">
+            <span class="label" id="vlabel">대기</span>
+            <span class="cls" id="vcls">class —</span>
+          </div>
+
+          <div class="meter">
+            <div class="lab"><span>사람 인식 신뢰도 (visibility)</span><span id="vismeta">—</span></div>
+            <div class="track"><i id="visbar"></i></div>
+          </div>
+
+          <div class="probs">
+            <h4>클래스별 확률 · XGBoost</h4>
+            <div id="problist"></div>
+          </div>
+
+          <div class="timer">
+            <span>나쁜 자세 지속</span>
+            <span class="big" id="badtimer">0.0s</span>
+            <span>· 60초 경과 시 알림</span>
+          </div>
+
+          <div class="alert" id="alert">
+            <b>자세 교정 알림</b> — 나쁜 자세가 1분 이상 지속되고 있어요. 잠시 스트레칭하고 바르게 앉아 주세요.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- how it works -->
+    <section class="how">
+      <h3>어떻게 동작하나</h3>
+      <p class="sub">실제 앱(Django)의 <code>/service/send_image/</code> 서버 파이프라인을 브라우저 클라이언트로 이식했습니다. 결과는 원본 <code>.pkl</code>과 동일합니다.</p>
+      <div class="pipe">
+        <div class="step"><div class="n">01</div><div class="t">웹캠 프레임</div><div class="d">getUserMedia로 카메라 스트림을 받아 매 프레임 처리</div></div>
+        <div class="step"><div class="n">02</div><div class="t">MediaPipe PoseLandmarker</div><div class="d">33개 포즈 랜드마크 (x·y·z·visibility) 추출, WASM 실행</div></div>
+        <div class="step"><div class="n">03</div><div class="t">특징 엔지니어링 201차원</div><div class="d">9개 랜드마크의 위치·거리·상대거리·상대z·각도. <code>preprocessing.py</code> 정확 이식</div></div>
+        <div class="step"><div class="n">04</div><div class="t">XGBoost → ONNX</div><div class="d">실제 학습된 <code>pose_classification_model.pkl</code>을 ONNX로 변환, onnxruntime-web로 추론</div></div>
+        <div class="step"><div class="n">05</div><div class="t">판정 · 알림</div><div class="d">5개 클래스 분류 + visibility 게이트 + 1분 나쁜자세 알림</div></div>
+      </div>
+      <p class="note">
+        <b>정직성 노트.</b> 원본 앱은 서버에서 <b>MediaPipe Holistic</b>을 썼고, 이 데모는 브라우저용 <b>MediaPipe PoseLandmarker</b>(같은 BlazePose 토폴로지)를 씁니다.
+        특징 벡터(201차원)와 분류기(XGBoost)는 원본과 동일하게 재현했으며, JS 전처리는 파이썬 golden 벡터와 오차 <code>5e-6</code>, ONNX는 원본 <code>.pkl</code>과 라벨·확률이 일치함을 검증했습니다.
+        랜드마크 추정 모델의 미세 차이로 예측이 원본과 완전히 같지는 않을 수 있습니다. 클래스: <code>0</code> 바른 자세 · <code>1~4</code> 나쁜 자세 유형 · <code>-1</code> 사람 없음.
+        영상은 브라우저 안에서만 처리되며 서버로 전송되지 않습니다.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js"></script>
+<script src="posture-features.js"></script>
+<script type="module">
+import { PoseLandmarker, FilesetResolver, DrawingUtils }
+  from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
+
+const PF = window.PostureFeatures;
+const $ = id => document.getElementById(id);
+const els = {
+  start:$('start'), stop:$('stop'), status:$('status'),
+  video:$('video'), overlay:$('overlay'), ph:$('ph'), stage:$('stage'),
+  livedot:$('livedot'), corner:$('cornertxt'), fps:$('fps'),
+  verdict:$('verdict'), vlabel:$('vlabel'), vcls:$('vcls'),
+  visbar:$('visbar'), vismeta:$('vismeta'), problist:$('problist'),
+  badtimer:$('badtimer'), alert:$('alert'),
+};
+
+const CLASS_ORDER = [0,1,2,3,4]; // ONNX proba column order
+let poseLandmarker=null, ortSession=null, drawUtils=null;
+let running=false, rafId=null, lastVideoTime=-1;
+let lastClassifyAt=0, badSince=null, alerted=false;
+let frames=0, fpsAt=performance.now();
+
+// --- build probability rows once ---
+els.problist.innerHTML = CLASS_ORDER.map(c=>{
+  const t = PF.LABELS[String(c)].ko;
+  return `<div class="prow" data-c="${c}">
+    <span class="pt">${t}</span>
+    <span class="pbar"><i></i></span>
+    <span class="pv">0%</span></div>`;
+}).join('');
+
+function setStatus(t){ els.status.textContent = t; }
+
+async function loadModels(){
+  setStatus('자세 모델(ONNX) 로딩 중…');
+  ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/";
+  ortSession = await ort.InferenceSession.create("../model/pose_classification.onnx");
+
+  setStatus('MediaPipe PoseLandmarker 로딩 중… (최초 1회 다운로드)');
+  const vision = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");
+  const opts = {
+    baseOptions:{
+      modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+      delegate:"GPU"
+    },
+    runningMode:"VIDEO", numPoses:1, minPoseDetectionConfidence:0.5
+  };
+  try { poseLandmarker = await PoseLandmarker.createFromOptions(vision, opts); }
+  catch(e){ opts.baseOptions.delegate="CPU"; poseLandmarker = await PoseLandmarker.createFromOptions(vision, opts); }
+
+  setStatus('준비 완료. ▶ 버튼을 눌러 시작하세요.');
+  els.start.disabled = false;
+}
+
+async function start(){
+  if(running) return;
+  els.start.disabled = true;
+  setStatus('카메라 권한 요청 중…');
+  let stream;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'},audio:false});
+  }catch(e){
+    setStatus('카메라를 열 수 없습니다: '+e.message);
+    els.start.disabled=false; return;
+  }
+  if(window.Notification && Notification.permission==='default'){ try{ await Notification.requestPermission(); }catch(_){} }
+
+  els.video.srcObject = stream;
+  await els.video.play();
+  els.overlay.width = els.video.videoWidth || 640;
+  els.overlay.height = els.video.videoHeight || 480;
+  drawUtils = new DrawingUtils(els.overlay.getContext('2d'));
+
+  els.ph.style.display='none';
+  els.video.style.display='block';
+  els.overlay.style.display='block';
+  els.start.style.display='none';
+  els.stop.style.display='inline-block';
+  els.livedot.classList.add('live');
+  els.corner.textContent='LIVE';
+  running = true; lastVideoTime=-1; lastClassifyAt=0; badSince=null; alerted=false;
+  setStatus('실시간 판별 중…');
+  loop();
+}
+
+function stop(){
+  running=false;
+  if(rafId) cancelAnimationFrame(rafId);
+  const s = els.video.srcObject;
+  if(s) s.getTracks().forEach(t=>t.stop());
+  els.video.srcObject=null;
+  els.video.style.display='none';
+  els.overlay.style.display='none';
+  els.ph.style.display='flex';
+  els.stop.style.display='none';
+  els.start.style.display='inline-block';
+  els.start.disabled=false;
+  els.livedot.classList.remove('live');
+  els.corner.textContent='STANDBY'; els.fps.textContent='';
+  resetVerdict();
+  setStatus('중지됨. 다시 시작할 수 있습니다.');
+}
+
+function resetVerdict(){
+  els.verdict.className='verdict'; els.vlabel.textContent='대기'; els.vcls.textContent='class —';
+  els.visbar.style.width='0%'; els.vismeta.textContent='—';
+  els.badtimer.textContent='0.0s'; els.alert.classList.remove('show');
+  CLASS_ORDER.forEach(c=>{
+    const row = els.problist.querySelector(`.prow[data-c="${c}"]`);
+    row.classList.remove('top'); row.querySelector('i').style.width='0%'; row.querySelector('.pv').textContent='0%';
+  });
+}
+
+function loop(){
+  if(!running) return;
+  rafId = requestAnimationFrame(loop);
+  const v = els.video;
+  if(v.readyState < 2 || v.currentTime===lastVideoTime){ return; }
+  lastVideoTime = v.currentTime;
+
+  const now = performance.now();
+  const res = poseLandmarker.detectForVideo(v, now);
+  const ctx = els.overlay.getContext('2d');
+  ctx.clearRect(0,0,els.overlay.width,els.overlay.height);
+
+  const has = res.landmarks && res.landmarks.length>0;
+  const lms = has ? res.landmarks[0] : null;
+  const vis = has ? PF.meanVisibility(lms) : 0;
+
+  // fps
+  frames++;
+  if(now - fpsAt > 500){ els.fps.textContent = Math.round(frames*1000/(now-fpsAt))+' fps'; frames=0; fpsAt=now; }
+
+  // visibility gate -> class -1
+  if(!has || vis <= PF.VISIBILITY_THRESHOLD){
+    if(has) drawSkeleton(lms,'#5f88a8');
+    updateVisibility(vis);
+    applyLabel(-1, null);
+    updateBadTimer(false, now);
+    return;
+  }
+
+  updateVisibility(vis);
+
+  // throttle heavy classification to ~2/sec; draw skeleton every frame
+  if(now - lastClassifyAt >= 450){
+    lastClassifyAt = now;
+    classify(lms, now);
+  }
+  if(window.__lastGood!==undefined) drawSkeleton(lms, window.__lastGood ? '#48d597' : (window.__lastGood===false ? '#ff6b6b' : '#5fb0d9'));
+  else drawSkeleton(lms,'#5fb0d9');
+}
+
+async function classify(lms, now){
+  try{
+    const feat = PF.buildFeatures(lms);            // Float32Array(201)
+    const tensor = new ort.Tensor('float32', feat, [1,201]);
+    const out = await ortSession.run({ input: tensor });
+    const label = Number(out.label.data[0]);
+    const probs = out.probabilities.data;          // len 5
+    applyLabel(label, probs);
+    const good = PF.LABELS[String(label)].good;    // true good / false bad / null
+    window.__lastGood = good;
+    updateBadTimer(good===false, now);
+  }catch(e){ setStatus('추론 오류: '+e.message); }
+}
+
+function applyLabel(label, probs){
+  const info = PF.LABELS[String(label)];
+  els.vlabel.textContent = info.ko;
+  els.vcls.textContent = 'class '+label;
+  els.verdict.className = 'verdict' + (info.good===true?' good':info.good===false?' bad':'');
+  if(!probs){
+    CLASS_ORDER.forEach(c=>{
+      const row=els.problist.querySelector(`.prow[data-c="${c}"]`);
+      row.classList.remove('top'); row.querySelector('i').style.width='0%'; row.querySelector('.pv').textContent='—';
+    });
+    return;
+  }
+  let maxi=0; for(let i=1;i<probs.length;i++) if(probs[i]>probs[maxi]) maxi=i;
+  CLASS_ORDER.forEach((c,i)=>{
+    const row=els.problist.querySelector(`.prow[data-c="${c}"]`);
+    const p = probs[i]!=null ? probs[i] : 0;
+    row.classList.toggle('top', i===maxi);
+    row.querySelector('i').style.width = (p*100).toFixed(1)+'%';
+    row.querySelector('.pv').textContent = (p*100).toFixed(1)+'%';
+  });
+}
+
+function updateVisibility(v){
+  els.visbar.style.width = Math.min(100, v*100).toFixed(0)+'%';
+  els.vismeta.textContent = (v*100).toFixed(0)+'%';
+}
+
+function updateBadTimer(isBad, now){
+  if(isBad){
+    if(badSince===null) badSince = now;
+    const dur = (now - badSince)/1000;
+    els.badtimer.textContent = dur.toFixed(1)+'s';
+    if(dur>=60 && !alerted){
+      alerted=true;
+      els.alert.classList.add('show');
+      if(window.Notification && Notification.permission==='granted'){
+        try{ new Notification('바른자세 지킴이', {body:'나쁜 자세가 1분 이상 지속되고 있어요. 바르게 앉아 주세요!'}); }catch(_){}
+      }
+    }
+  }else{
+    badSince=null; alerted=false;
+    els.badtimer.textContent='0.0s';
+    els.alert.classList.remove('show');
+  }
+}
+
+function drawSkeleton(lms, color){
+  drawUtils.drawConnectors(lms, PoseLandmarker.POSE_CONNECTIONS, {color:color, lineWidth:3});
+  drawUtils.drawLandmarks(lms, {color:'#e8f1f8', fillColor:color, radius:3, lineWidth:1});
+}
+
+els.start.addEventListener('click', start);
+els.stop.addEventListener('click', stop);
+els.start.disabled = true;
+loadModels().catch(e=>{ setStatus('모델 로딩 실패: '+e.message); });
+</script>
+</body>
+</html>
