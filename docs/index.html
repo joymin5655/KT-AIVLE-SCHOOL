@@ -264,7 +264,7 @@ footer a{color:var(--line)}
         <p class="tb-sub">웹캠 하나로 실시간 자세를 감지해 나쁜 자세를 잡아내고, 스트레칭과 AI 상담으로 교정을 돕는 헬스케어 웹 서비스. <span class="mono" style="color:var(--ink)">No extra hardware — a webcam is enough.</span></p>
         <div class="cta">
           <a class="btn primary" href="#architecture">▤ 전체 설계도 보기</a>
-          <a class="btn" href="/KT-AIVLE-SCHOOL/dashboard/" target="_blank" rel="noopener">▶ 라이브 데모 <small>(React · mock)</small></a>
+          <a class="btn" href="/KT-AIVLE-SCHOOL/dashboard/" target="_blank" rel="noopener">▶ 제품 데모 <small>(실제 화면)</small></a>
           <a class="btn" href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">⌥ Repository</a>
         </div>
       </div>
@@ -419,10 +419,10 @@ footer a{color:var(--line)}
 
   <!-- detached demo layer -->
   <div class="detached reveal">
-    <span class="tag">NOT WIRED</span>
-    <p><b>React SPA — GitHub Pages (<span class="mono">docs/dashboard/</span>)</b><br>
-    포트폴리오/데모용 UI. 컴포넌트가 <span class="mono">mockData.js</span>만 읽고 Django 백엔드로의 axios/fetch 호출이 <b>0개</b>다. 위 실동작 파이프라인과는 <b>연결되지 않은 별도 레이어</b> — 화면 구성만 동일하다.
-    <span class="solo">◆ 이 React 데모 · GitHub Pages 배포 · 본 설계도 페이지 = 조용민 개인 단독 작업</span></p>
+    <span class="tag">STATIC DEMO</span>
+    <p><b>제품 데모 — GitHub Pages (<span class="mono">docs/dashboard/</span>)</b><br>
+    실제 구축한 <b>Django 앱 화면(home · 서비스 · 통계 · 게시판 · 챗봇 등 20페이지)</b>을 정적으로 변환해 배포한 데모다. 실시간 웹캠 자세판별·챗봇 응답은 백엔드(MediaPipe · XGBoost · LangChain)가 있어야 동작한다.
+    <span class="solo">◇ 초기 포트폴리오용 React SPA 목업(<span class="mono">mockData.js</span> · 백엔드 호출 0)은 <span class="mono">docs/_react-demo-backup/</span>에 보관</span></p>
   </div>
 </section>
 
@@ -556,7 +556,7 @@ footer a{color:var(--line)}
     <div class="c">
       <div class="h"><b>React 데모 · 배포 · 설계도</b><span class="grade">개인 단독</span></div>
       <p>(팀 과제 이후) 포트폴리오용 React 대시보드, GitHub Pages 배포, 그리고 이 설계도 페이지까지 개인 포크에서 단독 작업.</p>
-      <div class="ev">src/frontend/** · docs/dashboard/** · docs/index.html</div>
+      <div class="ev">src/frontend/** · docs/_react-demo-backup/** · docs/index.html</div>
     </div>
   </div>
   <p class="honesty reveal">
@@ -587,7 +587,7 @@ footer a{color:var(--line)}
 <footer>
   <div class="in">
     <span>© 2024 Posture Keeper · Team 10 · KT AIVLE School</span>
-    <span><a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">GitHub ↗</a> · <a href="/KT-AIVLE-SCHOOL/dashboard/">Demo dashboard ↗</a></span>
+    <span><a href="https://github.com/joymin5655/KT-AIVLE-SCHOOL" target="_blank" rel="noopener">GitHub ↗</a> · <a href="/KT-AIVLE-SCHOOL/dashboard/">제품 데모 ↗</a></span>
   </div>
 </footer>
 

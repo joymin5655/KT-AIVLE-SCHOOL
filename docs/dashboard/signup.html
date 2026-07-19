@@ -1,0 +1,182 @@
+
+<!DOCTYPE HTML>
+<html lang="ko"> <!-- 코드언어 표시 == 웹 표준지침 준수 -->
+	<head>
+		<title>바른자세 로그인</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="static/assets/css/login.css" />
+		<link rel="icon" href="static/assets/images/logo_page.png" type="image/x-icon" />
+		<style>
+			/* 라벨을 왼쪽으로 정렬 */
+			th {
+				text-align: left;
+				vertical-align: top;
+				padding-right: 10px; /* 라벨과 필드 사이의 간격을 조정 */
+			}
+
+			/* 입력 필드의 스타일을 조정 */
+			input, select, textarea {
+				width: 100%; /* 필드를 부모 요소의 100% 너비로 설정 */
+				padding: 0.5em; /* 필드 안쪽의 여백을 설정 */
+				margin-bottom: 0.5em; /* 필드 아래쪽의 여백을 설정 */
+			}
+
+			/* 도움말 텍스트 스타일 조정 */
+			.help-text {
+				display: block;
+				margin-bottom: 0.5em; /* 도움말 텍스트 아래쪽의 여백을 설정 */
+				color: #666; /* 도움말 텍스트의 색상을 설정 */
+				font-size: 0.9em; /* 도움말 텍스트의 글꼴 크기를 설정 */
+			}
+
+		</style>
+	</head>
+	<body class="single is-preload">
+<div style="position:sticky;top:0;z-index:99999;background:#0b2545;color:#ffce54;font:600 12.5px/1.5 -apple-system,system-ui,sans-serif;padding:7px 14px;text-align:center;border-bottom:2px solid #5fb0d9">☉ 정적 데모 — KT AIVLE 4기 10조 ‘바른자세 지킴이’의 실제 구축 화면입니다. 실시간 웹캠·챗봇 응답은 Django 백엔드가 있어야 동작합니다. <a href="index.html" style="color:#5fb0d9">홈</a></div>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="/"><img src="static/assets/images/logo_page.png"style="width:45px; height:auto;"></a></h1>
+						<nav class="links">
+							<ul>
+								<li class="menu-item-login"><a href="login.html">로그인</a></li>
+								<li class="menu-item-register"><a href="signup.html">회원가입</a></li>
+								<li class="menu-item-company"><a href="intro.html">회사소개</a></li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+                        <!-- 회원가입 폼 -->
+						<div id="registerModal" class="modal">
+							<div class="modal-content">
+								<form method="post" action="">
+									
+									<div class="container">
+										<table>
+											
+											<tr>
+												<th>&lt;label for=&quot;id_username&quot;&gt;아이디:&lt;/label&gt;</th>
+												<td>
+													
+													<span class="help-text" style="display: block;">&lt;span class=&quot;helptext&quot;&gt;4자 이상 20자 이하&lt;/span&gt;</span>
+													
+													&lt;input type=&quot;text&quot; name=&quot;username&quot; id=&quot;id_username&quot;&gt;
+													<br>
+												</td>
+											</tr>
+											
+											<tr>
+												<th>&lt;label for=&quot;id_email&quot;&gt;이메일:&lt;/label&gt;</th>
+												<td>
+													
+													<span class="help-text" style="display: block;"></span>
+													
+													&lt;input type=&quot;email&quot; name=&quot;email&quot; id=&quot;id_email&quot;&gt;
+													<br>
+												</td>
+											</tr>
+											
+											<tr>
+												<th>&lt;label for=&quot;id_password1&quot;&gt;비밀번호:&lt;/label&gt;</th>
+												<td>
+													
+													<span class="help-text" style="display: block;">&lt;span class=&quot;helptext&quot;&gt;8자 이상, 숫자/문자 조합&lt;/span&gt;</span>
+													
+													&lt;input type=&quot;password&quot; name=&quot;password1&quot; id=&quot;id_password1&quot;&gt;
+													<br>
+												</td>
+											</tr>
+											
+											<tr>
+												<th>&lt;label for=&quot;id_password2&quot;&gt;비밀번호 확인:&lt;/label&gt;</th>
+												<td>
+													
+													<span class="help-text" style="display: block;">&lt;span class=&quot;helptext&quot;&gt;위와 동일하게 입력&lt;/span&gt;</span>
+													
+													&lt;input type=&quot;password&quot; name=&quot;password2&quot; id=&quot;id_password2&quot;&gt;
+													<br>
+												</td>
+											</tr>
+											
+										</table>
+										<input type="submit" value="회원가입"/>
+									</div>
+								</form>
+							</div>
+						</div>
+						
+				<!-- Footer -->
+					<section id="footer">
+						<div class="footer-logo">
+							<img src="static/assets/images/logo_page.png" alt="바른자세 로고" />
+						</div>
+						<ul class="icons">
+							<li><a href="https://twitter.com" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="https://facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="https://instagram.com" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="mailto:your@email.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+						<div class="policy-links">
+							| <a href="javascript:void(0);" onclick="openPrivacyPolicy();">개인정보처리방침</a>
+							| <a href="javascript:void(0);" onclick="openTermsOfService();">이용약관</a>
+							| <a href="javascript:void(0);" onclick="openFaq();">자주묻는질문</a>
+							| <a href="javascript:void(0);" onclick="openDataPolicy();">데이터베이스이용약관</a> |
+						</div>
+						<script>
+							function openPrivacyPolicy() {
+								var privacyWindow = window.open('', 'Privacy Policy', 'width=600,height=400');
+								privacyWindow.document.write('<html><head><title>개인정보처리방침</title></head><body>');
+								privacyWindow.document.write('<h1>개인정보처리방침</h1>');
+								privacyWindow.document.write('<p>여기에 개인정보처리방침 내용을 작성합니다.</p>');
+								privacyWindow.document.write('</body></html>');
+								privacyWindow.document.close();
+							}
+							
+							function openTermsOfService() {
+								var termsWindow = window.open('', 'Terms of Service', 'width=600,height=400');
+								termsWindow.document.write('<html><head><title>이용약관</title></head><body>');
+								termsWindow.document.write('<h1>이용약관</h1>');
+								termsWindow.document.write('<p>여기에 이용약관 내용을 작성합니다.</p>');
+								termsWindow.document.write('</body></html>');
+								termsWindow.document.close();
+							}
+						
+							function openFaq() {
+								var faqWindow = window.open('', 'FAQ', 'width=600,height=400');
+								faqWindow.document.write('<html><head><title>자주묻는질문</title></head><body>');
+								faqWindow.document.write('<h1>자주묻는질문</h1>');
+								faqWindow.document.write('<p>여기에 자주묻는질문 내용을 작성합니다.</p>');
+								faqWindow.document.write('</body></html>');
+								faqWindow.document.close();
+							}
+							
+							function openDataPolicy() {
+								var dataPolicyWindow = window.open('', 'Data Policy', 'width=600,height=400');
+								dataPolicyWindow.document.write('<html><head><title>데이터베이스이용약관</title></head><body>');
+								dataPolicyWindow.document.write('<h1>데이터베이스이용약관</h1>');
+								dataPolicyWindow.document.write('<p>여기에 데이터베이스이용약관 내용을 작성합니다.</p>');
+								dataPolicyWindow.document.write('</body></html>');
+								dataPolicyWindow.document.close();
+							}
+						</script>						
+						<p class="copyright">
+							<a href="https://aivle.edu.kt.co.kr/home/main/goMenuPage?mcd=MC00000034">KT Aivle School</a> Designed by Aivle 4기 10조.
+						</p>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="static/assets/js/jquery.min.js"></script>
+			<script src="static/assets/js/browser.min.js"></script>
+			<script src="static/assets/js/breakpoints.min.js"></script>
+			<script src="static/assets/js/util.js"></script>
+			<script src="static/assets/js/accounts.js"></script>
+	</body>
+</html>

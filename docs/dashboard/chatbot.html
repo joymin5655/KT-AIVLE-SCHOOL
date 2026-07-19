@@ -1,0 +1,82 @@
+
+<!-- chatbot/chatbot.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="static/assets/css/chatbot.css">
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:99999;background:#0b2545;color:#ffce54;font:600 12.5px/1.5 -apple-system,system-ui,sans-serif;padding:7px 14px;text-align:center;border-bottom:2px solid #5fb0d9">☉ 정적 데모 — KT AIVLE 4기 10조 ‘바른자세 지킴이’의 실제 구축 화면입니다. 실시간 웹캠·챗봇 응답은 Django 백엔드가 있어야 동작합니다. <a href="index.html" style="color:#5fb0d9">홈</a></div>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <div id="input-area">
+            <div id="input-roundbox">
+                <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
+                <button id="send-button" onclick="sendMessage()">전송</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            document.getElementById('user-input').value = ''; // 입력창을 비웁니다.
+            var chatBox = document.getElementById('chat-box');
+
+            // 사용자 메시지를 위한 chat-bubble 생성
+            var userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble user-message';
+            userBubble.innerText = userInput;
+
+            var userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'chat-message';
+            userMessageDiv.appendChild(userBubble);
+            chatBox.appendChild(userMessageDiv);
+    
+            // AJAX 요청을 통해 서버에 메시지 전송
+            fetch('/chatbot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // AI 메시지를 위한 chat-bubble 생성
+                var aiBubble = document.createElement('div');
+                aiBubble.className = 'chat-bubble ai-message';
+                aiBubble.innerText = '챗봇: ' + data.response;
+
+                var aiMessageDiv = document.createElement('div');
+                aiMessageDiv.className = 'chat-message ai';
+                aiMessageDiv.appendChild(aiBubble);
+                chatBox.appendChild(aiMessageDiv);
+
+                // 새 메시지가 추가될 때마다 채팅 박스를 스크롤하여 가장 최근 메시지가 보이도록 합니다.
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
+    
+        // CSRF 토큰 가져오기 (장고와 AJAX 요청을 위해 필요)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    
+</body>
+</html>
+

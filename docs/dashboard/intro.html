@@ -1,0 +1,175 @@
+
+<!DOCTYPE HTML>
+<html lang="ko"> <!-- 코드언어 표시 == 웹 표준지침 준수 -->
+	<head>
+		<title>바른자세 회사소개</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="static/assets/css/home.css" />
+		<link rel="icon" href="static/assets/images/logo_page.png" type="image/x-icon" />
+	</head>
+	<body class="single is-preload">
+<div style="position:sticky;top:0;z-index:99999;background:#0b2545;color:#ffce54;font:600 12.5px/1.5 -apple-system,system-ui,sans-serif;padding:7px 14px;text-align:center;border-bottom:2px solid #5fb0d9">☉ 정적 데모 — KT AIVLE 4기 10조 ‘바른자세 지킴이’의 실제 구축 화면입니다. 실시간 웹캠·챗봇 응답은 Django 백엔드가 있어야 동작합니다. <a href="index.html" style="color:#5fb0d9">홈</a></div>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="/"><img src="static/assets/images/logo_page.png"style="width:45px; height:auto;"></a></h1>
+						<nav class="links">
+							<ul>
+								
+									<li><a href="profile.html">조용민님!</a></li>
+									<li><a href="index.html?next=">로그 아웃</a></li>
+									<li class="menu-item-board"><a href="board.html">게시판</a></li>
+									<li><a href="service.html">서비스</a></li>
+								
+								<li class="menu-item-company"><a href="intro.html">회사소개</a></li>
+							</ul>
+						</nav>
+						<nav class="main">
+							<ul>
+								<li class="search">
+									<a class="fa-search" href="#search">Search</a>
+									<form id="search" method="get" action="#">
+										<input type="text" name="query" placeholder="Search" />
+									</form>
+								</li>
+								<li class="menu">
+									<a class="fa-bars" href="#menu">Menu</a>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<section id="menu">
+
+						<!-- Search -->
+							<section>
+								<form class="search" method="get" action="#">
+									<input type="text" name="query" placeholder="Search" />
+								</form>
+								<script>
+									document.addEventListener('DOMContentLoaded', function() {
+										// 검색 폼 제출 이벤트 리스너 추가
+										document.querySelector('.search').addEventListener('submit', function(event) {
+											event.preventDefault(); // 기본 제출 동작 방지
+											var query = document.querySelector('.search input[name="query"]').value; // 검색어 가져오기
+											redirectToPageBasedOnQuery(query); // 검색 처리 함수 호출
+										});
+									});
+								
+									function redirectToPageBasedOnQuery(query) {
+										if (query.includes('통계 결과', '통계', '기록')) {
+											window.location.href = 'statistics.html';
+										} else if (query.includes('모니터링', '서비스', '카메라')) {
+											window.location.href = 'service.html';
+										} else if (query.includes('게시판')) {
+											window.location.href = 'board.html';
+										} else if (query.includes('회사소개')) {
+											window.location.href = 'intro.html';
+										} else if (query.includes('회원가입')) {
+											window.location.href = 'signup.html';
+										} else if (query.includes('게임')) {
+											window.location.href = 'game.html';
+										} else {
+											// 다른 검색어에 대한 처리 (옵션)
+											// 예: window.location.href = '/search?query=' + encodeURIComponent(query);
+										}
+									}
+								</script>
+							</section>
+
+						<!-- Links -->
+							<section>
+								<ul class="links">
+																
+									<li>
+										<a href="service.html">
+											<h3>모니터링</h3>
+											<p>당신의 자세에 대해 분석해보세요</p>
+										</a>
+									</li>
+									<li>
+										<a href="statistics.html">
+											<h3>통계 결과</h3>
+											<p>다양한 통계 결과를 시각화 해보세요</p>
+										</a>
+									</li>
+									<li>
+										<a href="board.html">
+											<h3>게시판</h3>
+											<p>결과를 다른 사람들과 비교해 보고 질문해 보세요</p>
+										</a>
+									</li>
+									
+								</ul>
+							</section>
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="#">저희 회사를 소개하겠습니다</a></h2>
+										<p>저희 회사는 ~</p>
+									</div>
+								</header>
+								<span class="image featured"><img src="static/assets/images/intro.png" alt="" /></span>
+								<p>소개말1</p>
+								<p>소개말2</p>
+							</article>
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="footer-logo">
+							<img src="static/assets/images/logo_page.png" alt="바른자세 로고" />
+						</div>
+						<ul class="icons">
+							<li><a href="https://twitter.com" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="https://facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+							<li><a href="https://instagram.com" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="mailto:your@email.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+						<div class="policy-links">
+							| <a href="javascript:void(0);" onclick="openPrivacyPolicy();">개인정보처리방침</a>
+							| <a href="javascript:void(0);" onclick="openTermsOfService();">이용약관</a>
+							| <a href="javascript:void(0);" onclick="openFaq();">자주묻는질문</a>
+							| <a href="javascript:void(0);" onclick="openDataPolicy();">데이터베이스이용약관</a> |
+						</div>
+						<script>
+							function openPrivacyPolicy() {
+								window.open('privacy_policy.html', 'Privacy Policy', 'width=600,height=400');
+							}
+							
+							function openTermsOfService() {
+								window.open('terms_of_service.html', 'Terms of Service', 'width=600,height=400');
+							}
+							
+							function openDataPolicy() {
+								window.open('data_policy.html', 'Data Policy', 'width=600,height=400');
+							}
+						</script>						
+						<p class="copyright">
+							<a href="https://aivle.edu.kt.co.kr/home/main/goMenuPage?mcd=MC00000034">KT Aivle School</a> Designed by Aivle 4기 10조.
+						</p>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="static/assets/js/jquery.min.js"></script>
+			<script src="static/assets/js/browser.min.js"></script>
+			<script src="static/assets/js/breakpoints.min.js"></script>
+			<script src="static/assets/js/util.js"></script>
+			<script src="static/assets/js/main.js"></script>
+
+	</body>
+</html>

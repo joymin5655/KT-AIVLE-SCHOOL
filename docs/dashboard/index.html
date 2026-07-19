@@ -1,14 +1,393 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/KT-AIVLE-SCHOOL/dashboard/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dashboard</title>
-    <script type="module" crossorigin src="/KT-AIVLE-SCHOOL/dashboard/index.js"></script>
-    <link rel="stylesheet" crossorigin href="/KT-AIVLE-SCHOOL/dashboard/index.CbJf8Di2.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+
+
+
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>바른자세 도우미</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="static/assets/css/home.css">
+		<link rel="icon" href="static/assets/images/logo_page.png" type="image/x-icon" />
+		<!--
+		<link rel="icon" href="static/assets/images/logo_page2.png" type="image/x-icon" />
+		-->
+		<style>	
+			/* 스플래시 페이지 스타일 */
+			.splash-container {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				background-color: #f5f5f5; /* 흰색 계열의 배경 */
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 9999;
+				transition: visibility 0s, opacity 0.5s linear;
+				text-align:center;
+			}
+			.splash-text {
+				text-align: center;
+				font-size: 40px;
+				opacity: 0;
+				transform: translateY(-100px);
+				transition: opacity 1s, transform 1s;
+				position: relative;
+				z-index: 1;
+			}
+		</style>
+		<style>
+			#chat-button {
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				cursor: pointer;
+				z-index: 1000; /* Make sure it's above other elements */
+			}
+
+            /* 챗봇 팝업창 스타일링 */
+            #chat-popup {
+                position: fixed;
+                bottom: 60px; /* 챗봇 버튼 위에 위치 */
+                right: 20px;
+                width: 400px;
+                height: 550px;
+                border: 1px solid #ddd;
+                border-radius: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: white;
+                z-index: 1000;
+                display: none;
+            }
+
+            /* 챗봇 닫기 버튼 스타일링 */
+            #close-chat {
+                position: absolute;
+				top: 18px; /* 상단에서 적절한 위치 설정 */
+				right: 33px; /* 우측에서 적절한 위치 설정 */
+				background-color: #73928d; /* 챗봇 창 배경색과 동일하게 설정 */
+				color: white; /* 버튼 텍스트 색상 */
+				border: none;
+				border-radius: 50%;
+				width: 25px; /* 버튼 크기 조정 */
+				height: 25px; /* 버튼 크기 조정 */
+				text-align: center;
+				line-height: 25px; /* 버튼 높이에 맞게 텍스트를 중앙에 위치 */
+				cursor: pointer;
+				font-size: 20px; /* 텍스트 크기 조정 */
+				font-weight: bold; /* 텍스트 굵기 조정 */
+				box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* 버튼 그림자 효과 */
+				transition: background-color 0.2s;
+            }
+			
+			#close-button:hover {
+				background-color: #5c7a6d; /* 호버 시 배경색 변경 */
+			}
+			
+		</style>
+	</head>
+	<body class="is-preload">
+<div style="position:sticky;top:0;z-index:99999;background:#0b2545;color:#ffce54;font:600 12.5px/1.5 -apple-system,system-ui,sans-serif;padding:7px 14px;text-align:center;border-bottom:2px solid #5fb0d9">☉ 정적 데모 — KT AIVLE 4기 10조 ‘바른자세 지킴이’의 실제 구축 화면입니다. 실시간 웹캠·챗봇 응답은 Django 백엔드가 있어야 동작합니다. <a href="index.html" style="color:#5fb0d9">홈</a></div>
+	<!-- 스플래시 컨테이너 -->
+		<div class="splash-container">
+			<h1 class="splash-text">바른자세 도우미에<br> 오신 것을 환영합니다</h1>
+		</div>
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="/"><img src="static/assets/images/logo_page.png" style="width:45px; height:auto;"></a></h1>
+						<nav class="links">
+							<ul>
+								
+									<li><a href="profile.html">자세왕님!</a></li>
+									<li><a href="index.html?next=">로그 아웃</a></li>
+									<li class="menu-item-board"><a href="board.html">게시판</a></li>
+									<li><a href="service.html">서비스</a></li>
+								
+								<li class="menu-item-company"><a href="intro.html">회사소개</a></li>
+							</ul>
+						</nav>
+						<nav class="main">
+							<ul>
+								<li class="search">
+									<a class="fa-search" href="#search">찾아보기</a>
+									<form id="search" method="get" action="#">
+										<input type="text" name="query" placeholder="찾아보기" />
+									</form>
+								</li>
+								<li class="menu">
+									<a class="fa-bars" href="#menu">메뉴</a>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<section id="menu">
+
+						<!-- Search -->
+							<section>
+								<form class="search" method="get" action="#">
+									<input type="text" name="query" placeholder="찾아보기" />
+								</form>
+								<script>
+									document.addEventListener('DOMContentLoaded', function() {
+										// 검색 폼 제출 이벤트 리스너 추가
+										document.querySelector('.search').addEventListener('submit', function(event) {
+											event.preventDefault(); // 기본 제출 동작 방지
+											var query = document.querySelector('.search input[name="query"]').value; // 검색어 가져오기
+											redirectToPageBasedOnQuery(query); // 검색 처리 함수 호출
+										});
+									});
+								
+									function redirectToPageBasedOnQuery(query) {
+										if (query.includes('통계 결과', '통계', '기록')) {
+											window.location.href = 'statistics.html';
+										} else if (query.includes('모니터링', '서비스', '카메라')) {
+											window.location.href = 'service.html';
+										} else if (query.includes('게시판')) {
+											window.location.href = 'board.html';
+										} else if (query.includes('회사소개')) {
+											window.location.href = 'intro.html';
+										} else if (query.includes('회원가입')) {
+											window.location.href = 'signup.html';
+										} else if (query.includes('게임')) {
+											window.location.href = 'game.html';
+										} else {
+											// 다른 검색어에 대한 처리 (옵션)
+											// 예: window.location.href = '/search?query=' + encodeURIComponent(query);
+										}
+									}
+								</script>								
+							</section>
+
+						<!-- Links -->
+							<section>
+								<ul class="links">
+																
+									<li>
+										<a href="service.html">
+											<h3>모니터링</h3>
+											<p>당신의 자세에 대해 분석해보세요</p>
+										</a>
+									</li>
+									<li>
+										<a href="statistics.html">
+											<h3>통계 결과</h3>
+											<p>다양한 통계 결과를 시각화 해보세요</p>
+										</a>
+									</li>
+									<li>
+										<a href="board.html">
+											<h3>게시판</h3>
+											<p>결과를 다른 사람들과 비교해 보고 질문해 보세요</p>
+										</a>
+									</li>
+									
+								</ul>
+							</section>
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="intro.html">저희의 회사를 소개합니다</a></h2>
+										<p>바쁜 일상에도 당신의 건강한 자세를 유지하도록 돕습니다</p>
+									</div>
+									<div class="meta">
+										<time class="published" id="current-time"></time>
+									
+									</div>
+									<script>
+										// 현재 날짜와 시간을 가져와서 업데이트하는 함수
+										function updateTime() {
+										  var now = new Date();
+										  var months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+										  var formattedDate = months[now.getMonth()] + " " + now.getDate() + ", " + now.getFullYear();
+										
+										  // HTML의 time 요소를 찾아서 현재 날짜와 시간으로 설정
+										  document.getElementById('current-time').textContent = formattedDate;
+										}
+										
+										// 웹 페이지가 로드될 때 함수를 실행
+										window.onload = function() {
+										  updateTime();
+										};
+									</script>
+								</header>
+								<a href="intro.html" class="image featured"><img src="static/assets/images/intro.png" alt="설명적인 텍스트" width=auto height=auto/></a>
+								<p>업무 시간 중 자세 교정을 희망하는 모든 직장인 및 재택근무자를 대상으로 서비스를 제공하고 있습니다</p>
+								<footer>
+									<ul class="actions">
+										<li><a href="intro.html" class="button large">이동하기</a></li>
+									</ul>
+									<ul class="stats">
+										<li><a href="#" class="icon solid fa-heart" id="heart-link"><span id="heart-count">0</span></a></li>
+									</ul>
+									<script>
+										document.addEventListener('DOMContentLoaded', function() {
+										  // 'heart-link' ID를 가진 요소에 클릭 이벤트 리스너를 추가합니다.
+										  document.getElementById('heart-link').addEventListener('click', function(event) {
+											event.preventDefault(); // a 태그의 기본 이동 기능을 중단합니다.
+										
+											// 'heart-count' ID를 가진 요소의 숫자를 증가시킵니다.
+											var heartCountElement = document.getElementById('heart-count');
+											var currentCount = parseInt(heartCountElement.textContent, 10);
+											heartCountElement.textContent = currentCount + 1;
+										  });
+										});
+									</script>
+								</footer>
+							</article>
+
+						<!-- Post -->
+						<article class="post">
+							<header>
+								<div class="title">
+									<h2><a href="statistics.html">통계 페이지로 이동</a></h2>
+									<p>나의 통계를 확인해보세요</p>
+								</div>
+							</header>
+							<a href="statistics.html" class="image featured"><img src="static/assets/images/statistics.png" alt="" /></a>
+							<p>당신의 일일 자세가 어떤지 시각적으로 확인해보세요.</p>
+							<footer>
+								<ul class="actions">
+									<li><a href="statistics.html" class="button large">이동하기</a></li>
+								</ul>
+							</footer>
+						</article>
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="game.html">스트레칭 페이지로 이동</a></h2>
+										<p>하루동안의 피로를 스트레칭으로 풀어보세요</p>
+									</div>
+								</header>
+								<a href="game.html" class="image featured"><img src="static/assets/images/game.png" alt="" /></a>
+								<p>다양한 자세로 몸의 피로를 풀고 돌아가세요.</p>
+								<footer>
+									<ul class="actions">
+										<li><a href="game.html" class="button large">이동하기</a></li>
+									</ul>
+								</footer>
+							</article>
+							<!-- Chatbot button -->
+								<div id="chat-button">
+									<img src="static/assets/images/chatbot.png" alt="Chatbot" width="100" height="100" />
+								</div>
+							
+								
+							<!-- 챗봇 팝업창 -->
+							<div id="chat-popup">
+								<div id="close-chat">X</div>
+									<iframe src="/chatbot/" style="width: 100%; height: 100%; border: none;"></iframe>
+							</div>
+						<!-- Pagination -->
+							<ul class="actions pagination">
+								<li><a href="service.html" class="button large next">모니터링 서비스 이용하기</a></li>
+							</ul>
+
+					</div>
+
+				<!-- Sidebar -->
+					<section id="sidebar">
+
+						<!-- Intro -->
+							<section id="intro">
+								<a class="logo"><img src="static/assets/images/main_icon.png" alt="" /></a>
+								<header>
+									<h2>당신의 바른자세 도우미</h2>
+									<p>카메라로 당신의 자세를 분석해보고 저희가 시각화해서 알려드릴게요</p>
+								</header>
+							</section>
+
+						
+						<!-- About -->
+							<section class="blurb">
+								<h2>About Us</h2>
+								<p>
+									현대 사회에서 증가하는 <strong>거북목 증후군</strong>에 대해 직장인들의 건강 돌봄 및 직원 복지를 위해 개발하고자 하는 서비스입니다.<br>
+									현대 직장인들은 장시간의 컴퓨터 및 스마트폰 사용으로 인해, <strong>거북목과 같이 올바르지 못한 자세</strong>를 취함으로써 발생하는 여러 건강 문제를 지속적으로 경험하고 있습니다. 거북목은 허리와 목의 근육들이 지속적인 긴장 상태에 놓이면서 발생하는 문제로, 이로 인해 신체적 불편함과 함께 생산성 감소 및 워크-라이프 밸런스 문제를 유발할 수 있습니다.<br>
+									또한, 최근 <strong>재택근무가 늘어나며 직장인을 중심으로 바른 자세에 대한 관심이 증가</strong>하고 있으며, 이로 인해 재택근무자를 위한 셀프 자세 교정 상품들의 판매가 지속적으로 늘어나는 것을 확인했습니다.
+								</p>								  
+							</section>
+
+						<!-- Footer -->
+							<section id="footer">
+								<div class="footer-logo">
+									<img src="static/assets/images/logo_page.png" alt="바른자세 로고" />
+								</div>
+								<ul class="icons">
+									<li><a href="https://twitter.com" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="https://facebook.com" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="https://instagram.com" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="mailto:your@email.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+								</ul>
+								<div class="policy-links">
+									<a href="javascript:void(0);" onclick="openPrivacyPolicy();">개인정보처리방침</a>
+									| <a href="javascript:void(0);" onclick="openTermsOfService();">이용약관</a>
+									| <a href="javascript:void(0);" onclick="openFaq();">자주묻는질문</a>
+									<br>
+									<a href="javascript:void(0);" onclick="openDataPolicy();">데이터베이스이용약관</a>
+								</div>
+								<script>
+									function openPrivacyPolicy() {
+										window.open('privacy_policy.html', 'Privacy Policy', 'width=600,height=400');
+									}
+									
+									function openTermsOfService() {
+										window.open('terms_of_service.html', 'Terms of Service', 'width=600,height=400');
+									}
+									
+									function openDataPolicy() {
+										window.open('data_policy.html', 'Data Policy', 'width=600,height=400');
+									}
+								</script>																		
+								<p class="copyright">
+									<a href="https://aivle.edu.kt.co.kr/home/main/goMenuPage?mcd=MC00000034">KT Aivle School</a> Designed by Aivle 4기 10조.
+								</p>
+							</section>
+					</section>
+			</div>
+
+			<!-- 챗봇 토글 스크립트 -->
+			<script>
+				document.getElementById('chat-button').addEventListener('click', function() {
+					var chatPopup = document.getElementById('chat-popup');
+					chatPopup.style.display = chatPopup.style.display === 'none' ? 'block' : 'none';
+				});
+
+				document.getElementById('close-chat').addEventListener('click', function() {
+					document.getElementById('chat-popup').style.display = 'none';
+				});
+			</script>
+
+		<!-- Scripts -->
+			<script src="static/assets/js/jquery.min.js"></script>
+			<script src="static/assets/js/browser.min.js"></script>
+			<script src="static/assets/js/breakpoints.min.js"></script>
+			<script src="static/assets/js/util.js"></script>
+			<script src="static/assets/js/main.js"></script>
+			<script>
+				document.addEventListener('DOMContentLoaded', () => {
+					const splashText = document.querySelector('.splash-text');
+					setTimeout(() => {
+						splashText.style.opacity = '1';
+						splashText.style.transform = 'translateY(0)';
+					}, 500);
+					// 스플래시 애니메이션 이후 메인 페이지로 전환
+					setTimeout(() => {
+						document.querySelector('.splash-container').style.opacity = '0';
+						document.querySelector('.splash-container').style.visibility = 'hidden';
+					}, 2222); // 애니메이션 지속 시간을 조정하세요
+				});
+			</script>		
+	</body>
 </html>
