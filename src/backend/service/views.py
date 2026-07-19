@@ -39,10 +39,10 @@ mlflow.set_tracking_uri(mlflow_path)
 # model_uri_stretch = f"runs:/{run_id_stretch}/{model_name_stretch}"
 # stretching_model = mlflow.sklearn.load_model(model_uri_stretch)
     
-model_path = os.path.join(os.getcwd(), 'service\pose_classification_model.pkl')
-pose_model = joblib.load(model_path) 
+model_path = os.path.join(os.getcwd(), 'service/pose_classification_model.pkl')
+pose_model = joblib.load(model_path)
 
-stretching_model_path = os.path.join(os.getcwd(), 'service\pose_classification_model_stretch_final.pkl')
+stretching_model_path = os.path.join(os.getcwd(), 'service/pose_classification_model_stretch_final.pkl')
 stretching_model = joblib.load(stretching_model_path) 
 
 

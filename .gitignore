@@ -85,3 +85,4 @@ node_modules/
 
 # Built dashboards (commented out to include in GitHub Pages)
 # docs/dashboard/
+.gstack/
