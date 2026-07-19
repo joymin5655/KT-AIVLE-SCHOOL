@@ -22,7 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-dev-only-set-DJANGO_SECRET_KEY-in-prod"
+# 운영 환경에서는 환경변수 DJANGO_SECRET_KEY 로 주입할 것. 아래 기본값은 로컬 개발 전용.
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-dev-only-set-DJANGO_SECRET_KEY-in-prod")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
